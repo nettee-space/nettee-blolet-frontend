@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Nettee Blolet",
-  description: "Nettee Blolet Frontend Application",
+  title: 'Nettee Blolet',
+  description: 'Nettee Blolet Frontend Application',
 };
 
 export default function RootLayout({
