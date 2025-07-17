@@ -21,25 +21,15 @@ const eslintConfig = [
       "import/order": [
         "error",
         {
-          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          groups: ["builtin", "external", "internal"],
           pathGroups: [
             {
-              pattern: "next/**",
-              group: "external",
-              position: "before",
-            },
-            {
-              pattern: "react",
+              pattern: "{next/**,react}",
               group: "external",
               position: "after",
             },
-            {
-              pattern: "@/**",
-              group: "internal",
-              position: "before",
-            },
           ],
-          pathGroupsExcludedImportTypes: ["react"],
+          pathGroupsExcludedImportTypes: [],
           "newlines-between": "always",
           alphabetize: {
             order: "asc",
