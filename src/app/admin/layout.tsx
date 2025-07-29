@@ -56,17 +56,6 @@ const menuGroups = [
     ],
   },
   {
-    label: '통계',
-    items: [
-      {
-        icon: '/icons/calc.svg',
-        label: '통계 보기',
-        alt: 'Statistics',
-        href: '/admin/stats',
-      },
-    ],
-  },
-  {
     label: '댓글 관리',
     items: [
       {
@@ -84,24 +73,13 @@ const menuGroups = [
     ],
   },
   {
-    label: '꾸미기',
-    items: [
-      {
-        icon: '/icons/theme.svg',
-        label: '태마 편집',
-        alt: 'Theme',
-        href: '/admin/themes',
-      },
-    ],
-  },
-  {
     label: '관리 및 도구',
     items: [
       {
-        icon: '/icons/setting.svg',
-        label: '마이페이지',
-        alt: 'My Page',
-        href: '/admin/profile',
+        icon: '/icons/account-management.svg',
+        label: '계정관리',
+        alt: 'Account Management',
+        href: '/admin/account',
       },
       {
         icon: '/icons/setting.svg',
@@ -110,10 +88,10 @@ const menuGroups = [
         href: '/admin/settings',
       },
       {
-        icon: '/icons/plugin.svg',
-        label: '플러그인',
-        alt: 'Plugin',
-        href: '/admin/plugins',
+        icon: '/icons/tool.svg',
+        label: '도구',
+        alt: 'Tools',
+        href: '/admin/tools',
       },
     ],
   },
