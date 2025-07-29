@@ -20,10 +20,23 @@ const dummyPosts = [
   { id: 10, title: '사이드 프로젝트 3탄' },
 ];
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export default function SeriesPage() {
   const [isAddMode, setIsAddMode] = useState<boolean>(false);
   const [seriesName, setSeriesName] = useState<string>('');
   const [seriesDescription, setSeriesDescription] = useState<string>('');
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [allPosts, setAllPosts] = useState(dummyPosts);
   const [seriesPosts, setSeriesPosts] = useState<typeof dummyPosts>([]);
   const [draggedPostId, setDraggedPostId] = useState<number | null>(null); // 현재 드래그되고 있는 게시글 id
@@ -34,7 +47,14 @@ export default function SeriesPage() {
     index: number;
   } | null>(null); // Shift 클릭 범위 선택의 기준점(고정점) 정보
 
-  console.log(seriesPosts);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setBannerImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setBannerPreview(previewUrl);
+    }
+  };
 
   // ESC 키로 전체 선택 해제
   useEffect(() => {
@@ -61,9 +81,6 @@ export default function SeriesPage() {
       container === 'all'
         ? allPosts.findIndex((p) => p.id === post.id)
         : seriesPosts.findIndex((p) => p.id === post.id);
-
-    // console.log(currentIndex);
-    // console.log(rangeSelectionAnchor);
 
     // Shift 클릭: 범위 선택
     if (e.shiftKey && rangeSelectionAnchor && rangeSelectionAnchor.container === container) {
@@ -177,6 +194,8 @@ export default function SeriesPage() {
     setIsAddMode(false);
     setSeriesName('');
     setSeriesDescription('');
+    setBannerImage(null);
+    setBannerPreview(null);
     setAllPosts(dummyPosts);
     setSeriesPosts([]);
     setSelectedPostIds([]);
@@ -194,15 +213,18 @@ export default function SeriesPage() {
         displayOrder: index + 1,
       }));
 
+      let bannerBase64 = '';
+      if (bannerImage) bannerBase64 = await convertToBase64(bannerImage);
+
       const requestData = {
         blogId: '1',
         title: seriesName,
         description: seriesDescription,
-        banner: '',
+        banner: bannerBase64,
         seriesArticleList,
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/series`, {
+      const response = await fetch(`${BASE_URL}/series`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -238,23 +260,47 @@ export default function SeriesPage() {
 
         <div className='mb-6'>
           <label className='mb-2 block text-sm font-medium text-black'>시리즈 배너</label>
-          <div className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white p-4 transition-colors hover:bg-[#F2F2F2]'>
-            <div className='text-center'>
-              <div className='mb-3 flex justify-center'>
+          <input
+            type='file'
+            accept='image/*'
+            onChange={handleImageChange}
+            className='hidden'
+            id='banner-upload'
+          />
+          <label
+            htmlFor='banner-upload'
+            className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white p-4 transition-colors hover:bg-[#F2F2F2]'
+          >
+            {bannerPreview ? (
+              <div className='relative h-full w-full'>
                 <Image
-                  src='/icons/image-upload.svg'
-                  alt='이미지 업로드'
-                  width={40}
-                  height={40}
-                  className='text-gray-400'
+                  src={bannerPreview}
+                  alt='시리즈 배너 미리보기'
+                  fill
+                  className='rounded-lg object-cover'
                 />
+                <div className='absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 opacity-0 transition-opacity hover:opacity-100'>
+                  <p className='text-sm font-medium text-white'>이미지 변경하기</p>
+                </div>
               </div>
-              <p className='mb-1 text-sm font-medium text-black'>
-                이미지를 업로드 하려면 클릭 또는 파일을 드래그 해주세요.
-              </p>
-              <p className='text-xs text-gray-400'>이미지 권장 크기 0000x0000 픽셀</p>
-            </div>
-          </div>
+            ) : (
+              <div className='text-center'>
+                <div className='mb-3 flex justify-center'>
+                  <Image
+                    src='/icons/image-upload.svg'
+                    alt='이미지 업로드'
+                    width={40}
+                    height={40}
+                    className='text-gray-400'
+                  />
+                </div>
+                <p className='mb-1 text-sm font-medium text-black'>
+                  이미지를 업로드 하려면 클릭 또는 파일을 드래그 해주세요.
+                </p>
+                <p className='text-xs text-gray-400'>이미지 권장 크기 0000x0000 픽셀</p>
+              </div>
+            )}
+          </label>
         </div>
 
         <div className='mb-6'>
