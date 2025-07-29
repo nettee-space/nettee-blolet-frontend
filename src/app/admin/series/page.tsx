@@ -34,6 +34,8 @@ export default function SeriesPage() {
     index: number;
   } | null>(null); // Shift 클릭 범위 선택의 기준점(고정점) 정보
 
+  console.log(seriesPosts);
+
   // ESC 키로 전체 선택 해제
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -181,161 +183,130 @@ export default function SeriesPage() {
     setRangeSelectionAnchor(null);
   };
 
-  const handleSave = () => setIsAddMode(false);
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      // 임시 더미 데이터 구조 변경
+      const seriesArticleList = seriesPosts.map((post, index) => ({
+        draftId: post.id.toString(),
+        articleId: post.id.toString(),
+        displayOrder: index + 1,
+      }));
+
+      const requestData = {
+        blogId: '1',
+        title: seriesName,
+        description: seriesDescription,
+        banner: '',
+        seriesArticleList,
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/series`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        console.log('시리즈가 성공적으로 저장되었습니다.');
+        handleCancel();
+      } else {
+        console.error('시리즈 저장 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('API 요청 중 오류가 발생했습니다:', error);
+    }
+  };
 
   return isAddMode ? (
     <div className='mx-auto w-full max-w-5xl'>
-      <div className='flex items-center justify-between text-black'>
-        <h1 className='text-2xl font-bold'>시리즈 추가</h1>
-        <Button
-          onClick={handleSave}
-          className='rounded-full bg-[#4D4D4D] px-5 py-1 font-semibold text-white hover:bg-[#3D3D3D]'
-        >
-          저장하기
-        </Button>
-      </div>
+      <form onSubmit={handleSave}>
+        <div className='flex items-center justify-between text-black'>
+          <h1 className='text-2xl font-bold'>시리즈 추가</h1>
+          <Button
+            type='submit'
+            className='rounded-full bg-[#4D4D4D] px-5 py-1 font-semibold text-white hover:bg-[#3D3D3D]'
+          >
+            저장하기
+          </Button>
+        </div>
 
-      <Separator className='my-8 bg-[#CCCCCC]' />
+        <Separator className='my-8 bg-[#CCCCCC]' />
 
-      <div className='mb-6'>
-        <label className='mb-2 block text-sm font-medium text-black'>시리즈 배너</label>
-        <div className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white p-4 transition-colors hover:bg-[#F2F2F2]'>
-          <div className='text-center'>
-            <div className='mb-3 flex justify-center'>
-              <Image
-                src='/icons/image-upload.svg'
-                alt='이미지 업로드'
-                width={40}
-                height={40}
-                className='text-gray-400'
-              />
+        <div className='mb-6'>
+          <label className='mb-2 block text-sm font-medium text-black'>시리즈 배너</label>
+          <div className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white p-4 transition-colors hover:bg-[#F2F2F2]'>
+            <div className='text-center'>
+              <div className='mb-3 flex justify-center'>
+                <Image
+                  src='/icons/image-upload.svg'
+                  alt='이미지 업로드'
+                  width={40}
+                  height={40}
+                  className='text-gray-400'
+                />
+              </div>
+              <p className='mb-1 text-sm font-medium text-black'>
+                이미지를 업로드 하려면 클릭 또는 파일을 드래그 해주세요.
+              </p>
+              <p className='text-xs text-gray-400'>이미지 권장 크기 0000x0000 픽셀</p>
             </div>
-            <p className='mb-1 text-sm font-medium text-black'>
-              이미지를 업로드 하려면 클릭 또는 파일을 드래그 해주세요.
-            </p>
-            <p className='text-xs text-gray-400'>이미지 권장 크기 0000x0000 픽셀</p>
           </div>
         </div>
-      </div>
 
-      <div className='mb-6'>
-        <label className='mb-2 block text-sm font-medium text-black'>시리즈 이름</label>
-        <Input
-          value={seriesName}
-          onChange={(e) => setSeriesName(e.target.value)}
-          placeholder='이름을 입력해주세요. 최대 30글자'
-          maxLength={30}
-          className='border-[#CCCCCC] focus:border-[#4D4D4D] focus:ring-[#4D4D4D]/20'
-        />
-      </div>
+        <div className='mb-6'>
+          <label className='mb-2 block text-sm font-medium text-black'>시리즈 이름</label>
+          <Input
+            value={seriesName}
+            onChange={(e) => setSeriesName(e.target.value)}
+            placeholder='이름을 입력해주세요. 최대 30글자'
+            maxLength={30}
+            className='border-[#CCCCCC] focus:border-[#4D4D4D] focus:ring-[#4D4D4D]/20'
+          />
+        </div>
 
-      <div className='mb-8'>
-        <label className='mb-2 block text-sm font-medium text-black'>시리즈 설명</label>
-        <textarea
-          value={seriesDescription}
-          onChange={(e) => setSeriesDescription(e.target.value)}
-          placeholder='시리즈에 대한 설명을 입력해주세요. 최대 ???자'
-          className='min-h-[100px] w-full rounded-md border border-[#CCCCCC] px-3 py-2 text-sm placeholder:text-gray-500 focus:border-[#4D4D4D] focus:ring-1 focus:ring-[#4D4D4D]/20 focus:outline-none'
-        />
-      </div>
+        <div className='mb-8'>
+          <label className='mb-2 block text-sm font-medium text-black'>시리즈 설명</label>
+          <textarea
+            value={seriesDescription}
+            onChange={(e) => setSeriesDescription(e.target.value)}
+            placeholder='시리즈에 대한 설명을 입력해주세요. 최대 ???자'
+            className='min-h-[100px] w-full rounded-md border border-[#CCCCCC] px-3 py-2 text-sm placeholder:text-gray-500 focus:border-[#4D4D4D] focus:ring-1 focus:ring-[#4D4D4D]/20 focus:outline-none'
+          />
+        </div>
 
-      <div className='mb-6'>
-        <label className='mb-2 block text-sm font-medium text-black'>게시글 관리</label>
-        <div className='flex flex-col items-center gap-2 sm:flex-row'>
-          <div
-            className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
-              dragOverContainer === 'all'
-                ? 'border-blue-400 bg-blue-50 shadow-lg'
-                : 'border-[#CCCCCC]'
-            }`}
-            onDragOver={(e) => handleDragOver(e, 'all')}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, 'all')}
-          >
-            <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
-              <span className='text-sm font-medium text-black'>전체 게시글</span>
-              <span className='text-sm text-[#999999]'>{allPosts.length}</span>
-            </div>
-            {allPosts.map((post) => (
-              <div
-                key={post.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, post.id)}
-                onDragEnd={handleDragEnd}
-                onClick={(e) => handlePostClick(e, post, 'all')}
-                className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                  draggedPostId === post.id
-                    ? 'scale-95 opacity-50'
-                    : selectedPostIds.includes(post.id)
-                      ? 'border-blue-200 bg-blue-100'
-                      : 'hover:bg-gray-50'
-                }`}
-              >
-                <div className='flex items-center gap-2'>
-                  <Image
-                    src='/icons/drag.svg'
-                    alt='드래그'
-                    width={16}
-                    height={16}
-                    className='size-6'
-                  />
-                  <span
-                    className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-blue-800' : 'text-black'}`}
-                  >
-                    {post.title}
-                  </span>
-                </div>
+        <div className='mb-6'>
+          <label className='mb-2 block text-sm font-medium text-black'>게시글 관리</label>
+          <div className='flex flex-col items-center gap-2 sm:flex-row'>
+            <div
+              className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
+                dragOverContainer === 'all'
+                  ? 'border-blue-400 bg-blue-50 shadow-lg'
+                  : 'border-[#CCCCCC]'
+              }`}
+              onDragOver={(e) => handleDragOver(e, 'all')}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, 'all')}
+            >
+              <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
+                <span className='text-sm font-medium text-black'>전체 게시글</span>
+                <span className='text-sm text-[#999999]'>{allPosts.length}</span>
               </div>
-            ))}
-          </div>
-
-          <div className='flex items-center justify-center'>
-            <Image
-              src='/icons/exchange.svg'
-              alt='게시글 이동'
-              width={24}
-              height={24}
-              className='size-8 rotate-90 sm:rotate-0'
-            />
-          </div>
-
-          <div
-            className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
-              dragOverContainer === 'series'
-                ? 'border-green-400 bg-green-50 shadow-lg'
-                : 'border-[#CCCCCC]'
-            }`}
-            onDragOver={(e) => handleDragOver(e, 'series')}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, 'series')}
-          >
-            <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
-              <span className='text-sm font-medium text-black'>현재 시리즈</span>
-              <span className='text-sm text-[#999999]'>{seriesPosts.length}</span>
-            </div>
-            {seriesPosts.length === 0 ? (
-              <div className='flex h-[calc(100%-45px)] items-center justify-center text-center'>
-                <div>
-                  <p className='text-sm text-[#999999]'>
-                    왼쪽 글 목록을 드래그하여
-                    <br />
-                    시리즈에 추가해보세요
-                  </p>
-                </div>
-              </div>
-            ) : (
-              seriesPosts.map((post) => (
+              {allPosts.map((post) => (
                 <div
                   key={post.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, post.id)}
                   onDragEnd={handleDragEnd}
-                  onClick={(e) => handlePostClick(e, post, 'series')}
+                  onClick={(e) => handlePostClick(e, post, 'all')}
                   className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
                     draggedPostId === post.id
                       ? 'scale-95 opacity-50'
                       : selectedPostIds.includes(post.id)
-                        ? 'border-green-200 bg-green-100'
+                        ? 'border-blue-200 bg-blue-100'
                         : 'hover:bg-gray-50'
                   }`}
                 >
@@ -348,17 +319,86 @@ export default function SeriesPage() {
                       className='size-6'
                     />
                     <span
-                      className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-green-800' : 'text-black'}`}
+                      className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-blue-800' : 'text-black'}`}
                     >
                       {post.title}
                     </span>
                   </div>
                 </div>
-              ))
-            )}
+              ))}
+            </div>
+
+            <div className='flex items-center justify-center'>
+              <Image
+                src='/icons/exchange.svg'
+                alt='게시글 이동'
+                width={24}
+                height={24}
+                className='size-8 rotate-90 sm:rotate-0'
+              />
+            </div>
+
+            <div
+              className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
+                dragOverContainer === 'series'
+                  ? 'border-green-400 bg-green-50 shadow-lg'
+                  : 'border-[#CCCCCC]'
+              }`}
+              onDragOver={(e) => handleDragOver(e, 'series')}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, 'series')}
+            >
+              <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
+                <span className='text-sm font-medium text-black'>현재 시리즈</span>
+                <span className='text-sm text-[#999999]'>{seriesPosts.length}</span>
+              </div>
+              {seriesPosts.length === 0 ? (
+                <div className='flex h-[calc(100%-45px)] items-center justify-center text-center'>
+                  <div>
+                    <p className='text-sm text-[#999999]'>
+                      왼쪽 글 목록을 드래그하여
+                      <br />
+                      시리즈에 추가해보세요
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                seriesPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, post.id)}
+                    onDragEnd={handleDragEnd}
+                    onClick={(e) => handlePostClick(e, post, 'series')}
+                    className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
+                      draggedPostId === post.id
+                        ? 'scale-95 opacity-50'
+                        : selectedPostIds.includes(post.id)
+                          ? 'border-green-200 bg-green-100'
+                          : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className='flex items-center gap-2'>
+                      <Image
+                        src='/icons/drag.svg'
+                        alt='드래그'
+                        width={16}
+                        height={16}
+                        className='size-6'
+                      />
+                      <span
+                        className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-green-800' : 'text-black'}`}
+                      >
+                        {post.title}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </form>
 
       {/* 취소 버튼 (임시) */}
       <div className='flex justify-end gap-3'>
