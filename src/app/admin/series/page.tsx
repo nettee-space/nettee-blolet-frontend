@@ -258,12 +258,22 @@ export default function SeriesPage() {
       <form onSubmit={handleSave}>
         <div className='flex items-center justify-between text-black'>
           <h1 className='text-2xl font-bold'>시리즈 추가</h1>
-          <Button
-            type='submit'
-            className='rounded-full bg-[#4D4D4D] px-5 py-1 font-semibold text-white hover:bg-[#3D3D3D]'
-          >
-            저장하기
-          </Button>
+          <div className='flex gap-3'>
+            <Button
+              type='button'
+              onClick={handleCancel}
+              variant='outline'
+              className='rounded-full border-black px-5 py-1 text-black hover:bg-gray-50'
+            >
+              취소
+            </Button>
+            <Button
+              type='submit'
+              className='rounded-full bg-[#4D4D4D] px-5 py-1 font-semibold text-white hover:bg-[#3D3D3D]'
+            >
+              저장하기
+            </Button>
+          </div>
         </div>
 
         <Separator className='my-8 bg-[#CCCCCC]' />
@@ -439,17 +449,6 @@ export default function SeriesPage() {
           </div>
         </div>
       </form>
-
-      {/* 취소 버튼 (임시) */}
-      <div className='flex justify-end gap-3'>
-        <Button
-          onClick={handleCancel}
-          variant='outline'
-          className='rounded-full border-[#CCCCCC] px-5 py-1 text-gray-600 hover:bg-gray-50'
-        >
-          취소
-        </Button>
-      </div>
     </div>
   ) : (
     <div className='mx-auto w-full max-w-5xl'>
