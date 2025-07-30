@@ -45,7 +45,7 @@ export default function SeriesPage() {
   const [rangeSelectionAnchor, setRangeSelectionAnchor] = useState<{
     container: 'all' | 'series';
     index: number;
-  } | null>(null); // Shift 클릭 범위 선택의 기준점(고정점) 정보
+  } | null>(null); // Shift를 누른 상태에서 범위 선택을 시작한 게시글의 인덱스
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,6 +68,8 @@ export default function SeriesPage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  console.log(selectedPostIds);
 
   // 게시글 (다중) 선택 클릭 핸들러
   const handlePostClick = (
@@ -92,11 +94,7 @@ export default function SeriesPage() {
       const currentPosts = container === 'all' ? allPosts : seriesPosts;
       const postsInRange = currentPosts.slice(startIndex, endIndex + 1);
 
-      // 기존 선택에 범위 내 게시글들 추가 (중복 방지)
-      const updatedSelection: number[] = [];
-      postsInRange.forEach((post) => {
-        if (!updatedSelection.includes(post.id)) updatedSelection.push(post.id);
-      });
+      const updatedSelection = postsInRange.map((post) => post.id);
 
       setSelectedPostIds(updatedSelection);
       return;
