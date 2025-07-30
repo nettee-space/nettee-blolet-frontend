@@ -69,8 +69,6 @@ export default function SeriesPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  console.log(selectedPostIds);
-
   // 게시글 (다중) 선택 클릭 핸들러
   const handlePostClick = (
     e: React.MouseEvent,
@@ -102,6 +100,20 @@ export default function SeriesPage() {
 
     // Ctrl/Cmd 클릭: 개별 선택/해제
     if (e.ctrlKey || e.metaKey) {
+      // 현재 선택된 게시글들이 어떤 영역에 속하는지 확인
+      const selectedInAll = selectedPostIds.some((id) => allPosts.some((p) => p.id === id));
+      const selectedInSeries = selectedPostIds.some((id) => seriesPosts.some((p) => p.id === id));
+
+      // 다른 영역의 게시글을 클릭한 경우 기존 선택 해제하고 새로운 게시글만 선택
+      if (
+        (container === 'all' && selectedInSeries && !selectedInAll) ||
+        (container === 'series' && selectedInAll && !selectedInSeries)
+      ) {
+        setSelectedPostIds([post.id]);
+        setRangeSelectionAnchor({ container, index: currentIndex });
+        return;
+      }
+
       // Ctrl/Cmd 누른 상태에서 이미 선택되어 있는 게시글을 클릭하면 선택 해제
       if (selectedPostIds.includes(post.id)) {
         setSelectedPostIds(selectedPostIds.filter((id) => id !== post.id));
@@ -327,9 +339,7 @@ export default function SeriesPage() {
           <div className='flex flex-col items-center gap-2 sm:flex-row'>
             <div
               className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
-                dragOverContainer === 'all'
-                  ? 'border-blue-400 bg-blue-50 shadow-lg'
-                  : 'border-[#CCCCCC]'
+                dragOverContainer === 'all' ? 'border-[#999999]' : 'border-[#CCCCCC]'
               }`}
               onDragOver={(e) => handleDragOver(e, 'all')}
               onDragLeave={handleDragLeave}
@@ -347,12 +357,8 @@ export default function SeriesPage() {
                   onDragEnd={handleDragEnd}
                   onClick={(e) => handlePostClick(e, post, 'all')}
                   className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                    draggedPostId === post.id
-                      ? 'scale-95 opacity-50'
-                      : selectedPostIds.includes(post.id)
-                        ? 'border-blue-200 bg-blue-100'
-                        : 'hover:bg-gray-50'
-                  }`}
+                    selectedPostIds.includes(post.id) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
+                  } ${draggedPostId && selectedPostIds.includes(post.id) && 'scale-95 opacity-50'}`}
                 >
                   <div className='flex items-center gap-2'>
                     <Image
@@ -362,11 +368,7 @@ export default function SeriesPage() {
                       height={16}
                       className='size-6'
                     />
-                    <span
-                      className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-blue-800' : 'text-black'}`}
-                    >
-                      {post.title}
-                    </span>
+                    <span className='text-sm text-black'>{post.title}</span>
                   </div>
                 </div>
               ))}
@@ -384,9 +386,7 @@ export default function SeriesPage() {
 
             <div
               className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
-                dragOverContainer === 'series'
-                  ? 'border-green-400 bg-green-50 shadow-lg'
-                  : 'border-[#CCCCCC]'
+                dragOverContainer === 'series' ? 'border-[#999999]' : 'border-[#CCCCCC]'
               }`}
               onDragOver={(e) => handleDragOver(e, 'series')}
               onDragLeave={handleDragLeave}
@@ -415,11 +415,11 @@ export default function SeriesPage() {
                     onDragEnd={handleDragEnd}
                     onClick={(e) => handlePostClick(e, post, 'series')}
                     className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                      draggedPostId === post.id
-                        ? 'scale-95 opacity-50'
-                        : selectedPostIds.includes(post.id)
-                          ? 'border-green-200 bg-green-100'
-                          : 'hover:bg-gray-50'
+                      selectedPostIds.includes(post.id) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
+                    } ${
+                      draggedPostId && selectedPostIds.includes(post.id)
+                        ? 'scale-95 opacity-30'
+                        : ''
                     }`}
                   >
                     <div className='flex items-center gap-2'>
@@ -430,11 +430,7 @@ export default function SeriesPage() {
                         height={16}
                         className='size-6'
                       />
-                      <span
-                        className={`text-sm ${selectedPostIds.includes(post.id) ? 'font-medium text-green-800' : 'text-black'}`}
-                      >
-                        {post.title}
-                      </span>
+                      <span className='text-sm text-black'>{post.title}</span>
                     </div>
                   </div>
                 ))
