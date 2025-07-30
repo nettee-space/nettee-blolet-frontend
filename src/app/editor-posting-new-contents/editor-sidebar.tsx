@@ -25,7 +25,7 @@ const menuGroups = [
 
 export default function EditorSidebar() {
     return (
-        <Sidebar>
+        <Sidebar className="sm:w-[300px] w-full">
             <SidebarHeader />
             <SidebarContent>
                 {menuGroups.map((group, groupIndex) => (

@@ -69,15 +69,18 @@ export default function EditorMain() {
   });
 
   return (
-    <Plate
-      editor={editor}
-      onChange={({ value }) => {
-        localStorage.setItem('installation-next-demo', JSON.stringify(value));
-      }}
-    >
-      <EditorContainer>
-        <Editor placeholder="Type your amazing content here..." />
-      </EditorContainer>
-    </Plate>
+    <main className='sm:w-[calc(100%-300px)] w-full'>
+        <Plate
+        editor={editor}
+        onChange={({ value }) => {
+            localStorage.setItem('installation-next-demo', JSON.stringify(value));
+        }}
+        >
+        <EditorContainer>
+            <Editor placeholder="Type your amazing content here..." />
+        </EditorContainer>
+        </Plate>
+    </main>
+    
   );
 }
