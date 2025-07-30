@@ -4,6 +4,13 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
@@ -46,6 +53,7 @@ export default function SeriesPage() {
     container: 'all' | 'series';
     index: number;
   } | null>(null); // Shift를 누른 상태에서 범위 선택을 시작한 게시글의 인덱스
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState<boolean>(false); // 이미지 삭제 확인 모달
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,6 +62,12 @@ export default function SeriesPage() {
       const previewUrl = URL.createObjectURL(file);
       setBannerPreview(previewUrl);
     }
+  };
+
+  const handleDeleteImage = () => {
+    setBannerImage(null);
+    setBannerPreview(null);
+    setIsDeleteImageModalOpen(false);
   };
 
   // ESC 키로 전체 선택 해제
@@ -234,6 +248,8 @@ export default function SeriesPage() {
         seriesArticleList,
       };
 
+      console.log(requestData);
+
       const response = await fetch(`${BASE_URL}/series`, {
         method: 'POST',
         headers: {
@@ -289,7 +305,7 @@ export default function SeriesPage() {
           />
           <label
             htmlFor='banner-upload'
-            className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white p-4 transition-colors hover:bg-[#F2F2F2]'
+            className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white transition-colors hover:bg-[#F2F2F2]'
           >
             {bannerPreview ? (
               <div className='relative h-full w-full'>
@@ -299,9 +315,29 @@ export default function SeriesPage() {
                   fill
                   className='rounded-lg object-cover'
                 />
-                <div className='absolute inset-0 flex items-center justify-center rounded-lg bg-black/40 opacity-0 transition-opacity hover:opacity-100'>
-                  <p className='text-sm font-medium text-white'>이미지 변경하기</p>
-                </div>
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='icon'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsDeleteImageModalOpen(true);
+                  }}
+                  className='absolute top-2 right-2 h-8 w-8 rounded-full bg-[#E6E6E9] text-gray-600 backdrop-blur-sm transition-all hover:bg-[#D0D0D3]'
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M18 6L6 18M6 6l12 12' />
+                  </svg>
+                </Button>
               </div>
             ) : (
               <div className='text-center'>
@@ -449,6 +485,33 @@ export default function SeriesPage() {
           </div>
         </div>
       </form>
+
+      {/* 이미지 삭제 확인 모달 */}
+      <Dialog open={isDeleteImageModalOpen} onOpenChange={setIsDeleteImageModalOpen}>
+        <DialogContent className='sm:max-w-[425px]' showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className='text-center text-lg font-medium text-black'>
+              등록한 이미지를 삭제 하시겠습니까?
+            </DialogTitle>
+          </DialogHeader>
+          <DialogFooter className='flex gap-2 pt-4'>
+            <Button
+              type='button'
+              onClick={handleDeleteImage}
+              className='flex-1 rounded-lg bg-[#F2F2F2] px-4 py-3 text-black hover:bg-[#E8E8E8]'
+            >
+              삭제
+            </Button>
+            <Button
+              type='button'
+              onClick={() => setIsDeleteImageModalOpen(false)}
+              className='flex-1 rounded-lg bg-[#F2F2F2] px-4 py-3 text-black hover:bg-[#E8E8E8]'
+            >
+              취소
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   ) : (
     <div className='mx-auto w-full max-w-5xl'>
