@@ -22,6 +22,7 @@ import { CalloutKit } from '@/components/callout-kit';
 import { CommentKit } from '@/components/comment-kit';
 import { LinkKit } from '@/components/link-kit';
 import { ListKit } from '@/components/list-kit';
+import { MarkdownKit } from '@/components/markdown-kit';
 import { SlashKit } from '@/components/slash-kit';
 import { SuggestionKit } from '@/components/suggestion-kit';
 import { TableKit } from '@/components/table-kit';
@@ -55,6 +56,7 @@ export default function PlateWrapper() {
       ...TableKit,
       ...ToggleKit,
       ...LinkKit,
+      ...MarkdownKit,
       H1Plugin.withComponent(H1Element),
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),
@@ -71,7 +73,7 @@ export default function PlateWrapper() {
       }}
     >
       <EditorContainer>
-        <Editor placeholder="Type your amazing content here..." />
+        <Editor placeholder='초기 상태에 텍스트를 입력해 주세요. “/” 입력하여 명령어를 사용할 수 있습니다.' className='placeholder:text-[#999] inline-block' />
       </EditorContainer>
     </Plate>
   );

@@ -120,7 +120,7 @@ const autoformatBlocks: AutoformatRule[] = [
     type: KEYS.h6,
   },
   {
-    match: ' ',
+    match: '| ',
     mode: 'block',
     type: KEYS.blockquote,
   },
@@ -142,7 +142,7 @@ const autoformatBlocks: AutoformatRule[] = [
     type: KEYS.toggle,
   },
   {
-    match: ['---', '—-', '___ '],
+    match: ['---'],
     mode: 'block',
     type: KEYS.hr,
     format: (editor) => {
