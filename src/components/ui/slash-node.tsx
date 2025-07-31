@@ -1,8 +1,6 @@
 'use client';
 
-import * as React from 'react';
 
-import type { PlateEditor, PlateElementProps } from 'platejs/react';
 
 import { AIChatPlugin } from '@platejs/ai/react';
 import {
@@ -13,6 +11,9 @@ import {
   Heading1Icon,
   Heading2Icon,
   Heading3Icon,
+  Heading4Icon,
+  Heading5Icon,
+  Heading6Icon,
   LightbulbIcon,
   ListIcon,
   ListOrdered,
@@ -25,7 +26,10 @@ import {
   TableOfContentsIcon,
 } from 'lucide-react';
 import { type TComboboxInputElement, KEYS } from 'platejs';
+import type { PlateEditor, PlateElementProps } from 'platejs/react';
 import { PlateElement } from 'platejs/react';
+
+import * as React from 'react';
 
 import {
   insertBlock,
@@ -81,54 +85,72 @@ const groups: Group[] = [
       {
         icon: <Heading1Icon />,
         keywords: ['title', 'h1'],
-        label: 'Heading 1',
+        label: 'heading1',
         value: KEYS.h1,
       },
       {
         icon: <Heading2Icon />,
         keywords: ['subtitle', 'h2'],
-        label: 'Heading 2',
+        label: 'heading2',
         value: KEYS.h2,
       },
       {
         icon: <Heading3Icon />,
         keywords: ['subtitle', 'h3'],
-        label: 'Heading 3',
+        label: 'heading3',
         value: KEYS.h3,
+      },
+      {
+        icon: <Heading3Icon />,
+        keywords: ['subtitle', 'h4'],
+        label: 'heading4',
+        value: KEYS.h4,
+      },
+      {
+        icon: <Heading3Icon />,
+        keywords: ['subtitle', 'h5'],
+        label: 'heading5',
+        value: KEYS.h5,
+      },
+      {
+        icon: <Heading3Icon />,
+        keywords: ['subtitle', 'h6'],
+        label: 'heading6',
+        value: KEYS.h6,
       },
       {
         icon: <ListIcon />,
         keywords: ['unordered', 'ul', '-'],
-        label: 'Bulleted list',
+        label: 'bullet',
         value: KEYS.ul,
       },
       {
         icon: <ListOrdered />,
         keywords: ['ordered', 'ol', '1'],
-        label: 'Numbered list',
+        label: 'number',
         value: KEYS.ol,
       },
       {
         icon: <Square />,
         keywords: ['checklist', 'task', 'checkbox', '[]'],
-        label: 'To-do list',
+        label: 'checkbox',
         value: KEYS.listTodo,
       },
       {
         icon: <ChevronRightIcon />,
         keywords: ['collapsible', 'expandable'],
-        label: 'Toggle',
+        label: 'toggle',
         value: KEYS.toggle,
       },
       {
         icon: <Code2 />,
         keywords: ['```'],
-        label: 'Code Block',
+        label: 'codeblock',
         value: KEYS.codeBlock,
       },
       {
         icon: <Table />,
-        label: 'Table',
+        label: 'table',
         value: KEYS.table,
       },
       {

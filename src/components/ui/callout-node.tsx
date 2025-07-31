@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import * as React from 'react';
 
 import { useCalloutEmojiPicker } from '@platejs/callout/react';
 import { useEmojiDropdownMenuState } from '@platejs/emoji/react';
 import { PlateElement } from 'platejs/react';
+
+import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

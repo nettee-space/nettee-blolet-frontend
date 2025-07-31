@@ -1,7 +1,6 @@
 'use client';
 
 import type { AutoformatRule } from '@platejs/autoformat';
-
 import {
   autoformatArrow,
   autoformatLegal,
@@ -12,9 +11,10 @@ import {
   autoformatSmartQuotes,
 } from '@platejs/autoformat';
 import { insertEmptyCodeBlock } from '@platejs/code-block';
+import { createLinkNode } from '@platejs/link';
 import { toggleList } from '@platejs/list';
-import { KEYS } from 'platejs';
-
+import { openNextToggles } from '@platejs/toggle/react';
+import { KEYS, TElement } from 'platejs';
 const autoformatMarks: AutoformatRule[] = [
   {
     match: '***',
@@ -82,7 +82,7 @@ const autoformatMarks: AutoformatRule[] = [
     type: KEYS.highlight,
   },
   {
-    match: '`',
+    match: '```',
     mode: 'mark',
     type: KEYS.code,
   },
@@ -120,7 +120,7 @@ const autoformatBlocks: AutoformatRule[] = [
     type: KEYS.h6,
   },
   {
-    match: '> ',
+    match: ' ',
     mode: 'block',
     type: KEYS.blockquote,
   },
@@ -135,12 +135,12 @@ const autoformatBlocks: AutoformatRule[] = [
       });
     },
   },
-  // {
-  //   match: '+ ',
-  //   mode: 'block',
-  //   preFormat: openNextToggles,
-  //   type: KEYS.toggle,
-  // },
+  {
+    match: '> ',
+    mode: 'block',
+    preFormat: openNextToggles,
+    type: KEYS.toggle,
+  },
   {
     match: ['---', '—-', '___ '],
     mode: 'block',
@@ -157,15 +157,16 @@ const autoformatBlocks: AutoformatRule[] = [
 
 const autoformatLists: AutoformatRule[] = [
   {
-    match: ['* ', '- '],
-    mode: 'block',
-    type: 'list',
-    format: (editor) => {
-      toggleList(editor, {
-        listStyleType: KEYS.ul,
-      });
-    },
+  match: ['-', '- '],
+  matchByRegex: true,
+  mode: 'block',
+  type: 'list',
+  format: (editor) => {
+    toggleList(editor, {
+      listStyleType: KEYS.ul,
+    });
   },
+},
   {
     match: [String.raw`^\d+\.$ `, String.raw`^\d+\)$ `],
     matchByRegex: true,
@@ -179,7 +180,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['[] '],
+    match: ['- [] '],
     mode: 'block',
     type: 'list',
     format: (editor) => {
@@ -193,7 +194,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['[x] '],
+    match: ['- [x] '],
     mode: 'block',
     type: 'list',
     format: (editor) => {

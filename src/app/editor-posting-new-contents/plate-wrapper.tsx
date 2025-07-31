@@ -24,6 +24,8 @@ import { LinkKit } from '@/components/link-kit';
 import { ListKit } from '@/components/list-kit';
 import { SlashKit } from '@/components/slash-kit';
 import { SuggestionKit } from '@/components/suggestion-kit';
+import { TableKit } from '@/components/table-kit';
+import { ToggleKit } from '@/components/toggle-kit';
 import { BlockquoteElement } from '@/components/ui/blockquote-node';
 import { CalloutElement } from '@/components/ui/callout-node';
 import { Editor, EditorContainer } from '@/components/ui/editor';
@@ -50,6 +52,9 @@ export default function PlateWrapper() {
       ...ListKit,
       ...LinkKit,
       ...CommentKit,
+      ...TableKit,
+      ...ToggleKit,
+      ...LinkKit,
       H1Plugin.withComponent(H1Element),
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),
