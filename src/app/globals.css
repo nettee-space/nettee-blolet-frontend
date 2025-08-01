@@ -5,6 +5,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+	font-family: 'Pretendard Variable';
+	font-weight: 45 920;
+	font-style: normal;
+	font-display: swap;
+	src: url('/fonts/woff2/PretendardVariable.woff2') format('woff2-variations');
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -125,4 +133,14 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+.placeholder-multiline::before {
+  content: attr(placeholder);
+  white-space: pre-wrap;
+  color: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  pointer-events: none;
 }
