@@ -1,8 +1,12 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 
 const dummyPosts = [
   { id: 1, title: '물컵 위를 걷는 기분이 들었어.' },
@@ -30,6 +35,13 @@ const dummyPosts = [
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+type SeriesFormData = z.infer<typeof seriesFormSchema>;
+
+const seriesFormSchema = z.object({
+  seriesName: z.string().min(1, '시리즈 이름을 입력해주세요.').max(30, '최대 30자 초과'),
+  seriesDescription: z.string().optional(),
+});
+
 const convertToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -41,8 +53,19 @@ const convertToBase64 = (file: File): Promise<string> => {
 
 export default function AddSeriesPage() {
   const router = useRouter();
-  const [seriesName, setSeriesName] = useState<string>('');
-  const [seriesDescription, setSeriesDescription] = useState<string>('');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SeriesFormData>({
+    resolver: zodResolver(seriesFormSchema),
+    defaultValues: {
+      seriesName: '',
+      seriesDescription: '',
+    },
+  });
+
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [allPosts, setAllPosts] = useState(dummyPosts);
@@ -219,9 +242,7 @@ export default function AddSeriesPage() {
     router.push('/admin/series');
   };
 
-  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: SeriesFormData) => {
     try {
       // 임시 더미 데이터 구조 변경
       const seriesArticleList = seriesPosts.map((post, index) => ({
@@ -235,8 +256,8 @@ export default function AddSeriesPage() {
 
       const requestData = {
         blogId: '1',
-        title: seriesName,
-        description: seriesDescription,
+        title: data.seriesName,
+        description: data.seriesDescription || '',
         banner: bannerBase64,
         seriesArticleList,
       };
@@ -264,7 +285,7 @@ export default function AddSeriesPage() {
 
   return (
     <div className='mx-auto w-full max-w-5xl'>
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className='flex items-center justify-between text-black'>
           <h1 className='text-2xl font-bold'>시리즈 추가</h1>
           <div className='flex gap-3'>
@@ -353,23 +374,27 @@ export default function AddSeriesPage() {
         </div>
 
         <div className='mb-6'>
-          <label className='mb-2 block text-sm font-medium text-black'>시리즈 이름</label>
+          <div className='mb-2 flex items-center gap-x-2'>
+            <label className='text-sm font-medium text-black'>시리즈 이름</label>
+            {errors.seriesName && (
+              <p className='text-sm font-medium text-[#F64646]'>{errors.seriesName.message}</p>
+            )}
+          </div>
           <Input
-            value={seriesName}
-            onChange={(e) => setSeriesName(e.target.value)}
+            {...register('seriesName')}
             placeholder='이름을 입력해주세요. 최대 30글자'
-            maxLength={30}
-            className='border-[#CCCCCC] focus:border-[#4D4D4D] focus:ring-[#4D4D4D]/20'
+            className={`border-[#CCCCCC] focus:outline-none focus-visible:border-[#CCCCCC] focus-visible:ring-0 focus-visible:outline-none ${
+              errors.seriesName && 'border-[#F64646] focus-visible:border-[#F64646]'
+            }`}
           />
         </div>
 
         <div className='mb-8'>
           <label className='mb-2 block text-sm font-medium text-black'>시리즈 설명</label>
-          <textarea
-            value={seriesDescription}
-            onChange={(e) => setSeriesDescription(e.target.value)}
+          <Textarea
+            {...register('seriesDescription')}
             placeholder='시리즈에 대한 설명을 입력해주세요. 최대 ???자'
-            className='min-h-[100px] w-full rounded-md border border-[#CCCCCC] px-3 py-2 text-sm placeholder:text-gray-500 focus:border-[#4D4D4D] focus:ring-1 focus:ring-[#4D4D4D]/20 focus:outline-none'
+            className='min-h-[100px] border-[#CCCCCC] focus:outline-none focus-visible:border-[#CCCCCC] focus-visible:ring-0 focus-visible:outline-none'
           />
         </div>
 
