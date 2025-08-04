@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 
@@ -23,10 +30,17 @@ interface SeriesResponse {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toISOString().split('T')[0];
+};
+
 export default function SeriesPage() {
   const [seriesList, setSeriesList] = useState<Series[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [seriesToDelete, setSeriesToDelete] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -50,12 +64,38 @@ export default function SeriesPage() {
     fetchSeries();
   }, []);
 
-  const handleAddSeries = () => router.push('/admin/series/add');
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+  const confirmDeleteSeries = (seriesId: string) => {
+    setSeriesToDelete(seriesId);
+    setIsDeleteModalOpen(true);
+    setOpenPopoverId(null);
   };
+
+  const handleDeleteSeries = async () => {
+    if (!seriesToDelete) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/series/${seriesToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        setSeriesList(seriesList.filter((series) => series.id !== seriesToDelete));
+        console.log('시리즈가 성공적으로 삭제되었습니다.');
+      } else {
+        console.error('시리즈 삭제 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('API 요청 중 오류가 발생했습니다:', error);
+    }
+
+    setIsDeleteModalOpen(false);
+    setSeriesToDelete(null);
+  };
+
+  const handleAddSeries = () => router.push('/admin/series/add');
 
   return (
     <div className='mx-auto w-full max-w-5xl'>
@@ -177,9 +217,7 @@ export default function SeriesPage() {
                           variant='ghost'
                           size='sm'
                           className='h-8 justify-start gap-1 px-2 text-sm font-normal text-[#F64646] hover:bg-gray-50 hover:text-[#F64646]'
-                          onClick={() => {
-                            setOpenPopoverId(null);
-                          }}
+                          onClick={() => confirmDeleteSeries(series.id)}
                         >
                           <Image src='/icons/trash.svg' alt='삭제' width={16} height={16} />
                           삭제
@@ -193,6 +231,36 @@ export default function SeriesPage() {
           </>
         )}
       </div>
+
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className='sm:max-w-[350px]' showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className='text-center text-lg font-medium text-black'>
+              시리즈를 삭제하시겠습니까?
+            </DialogTitle>
+          </DialogHeader>
+          <div className='text-center text-sm font-normal text-black'>
+            시리즈만 삭제되며, 해당 시리즈 포함된 글은 삭제되지 않습니다. 삭제된 시리즈는 복구할 수
+            없습니다.
+          </div>
+          <DialogFooter className='flex gap-2 pt-1'>
+            <Button
+              type='button'
+              onClick={handleDeleteSeries}
+              className='h-12 flex-1 rounded-lg bg-[#F2F2F2] px-4 text-sm font-medium text-black hover:bg-[#E8E8E8]'
+            >
+              삭제
+            </Button>
+            <Button
+              type='button'
+              onClick={() => setIsDeleteModalOpen(false)}
+              className='h-12 flex-1 rounded-lg bg-[#F2F2F2] px-4 text-sm font-medium text-black hover:bg-[#E8E8E8]'
+            >
+              취소
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
