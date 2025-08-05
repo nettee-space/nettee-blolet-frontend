@@ -19,19 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-
-const dummyPosts = [
-  { id: 1, title: '물컵 위를 걷는 기분이 들었어.' },
-  { id: 2, title: '30글자수 기준 186px 고정' },
-  { id: 3, title: '안녕하세요' },
-  { id: 4, title: '땡개에요 오늘 멉방은 땡초닫발' },
-  { id: 5, title: '마싯게먹겠습니다~ 좋아요 구독' },
-  { id: 6, title: '통통통통 사후르' },
-  { id: 7, title: 'UIUX 회고' },
-  { id: 8, title: '사이드 프로젝트 1탄' },
-  { id: 9, title: '사이드 프로젝트 2탄' },
-  { id: 10, title: '사이드 프로젝트 3탄' },
-];
+import { Article, dummyPosts } from '@/lib/dummy-data';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -68,11 +56,11 @@ export default function AddSeriesPage() {
 
   const [bannerImage, setBannerImage] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
-  const [allPosts, setAllPosts] = useState(dummyPosts);
-  const [seriesPosts, setSeriesPosts] = useState<typeof dummyPosts>([]);
-  const [draggedPostId, setDraggedPostId] = useState<number | null>(null); // 현재 드래그되고 있는 게시글 id
+  const [allPosts, setAllPosts] = useState<Article[]>(dummyPosts);
+  const [seriesPosts, setSeriesPosts] = useState<Article[]>([]);
+  const [draggedPostId, setDraggedPostId] = useState<string | null>(null); // 현재 드래그되고 있는 게시글 id
   const [dragOverContainer, setDragOverContainer] = useState<'all' | 'series' | null>(null); // 마우스가 어떤 드롭 영역 위에 있는지(전체 게시글 또는 현재 시리즈)
-  const [selectedPostIds, setSelectedPostIds] = useState<number[]>([]); // 다중 선택된 게시글 ID들
+  const [selectedPostIds, setSelectedPostIds] = useState<string[]>([]); // 다중 선택된 게시글 ID들
   const [rangeSelectionAnchor, setRangeSelectionAnchor] = useState<{
     container: 'all' | 'series';
     index: number;
@@ -108,17 +96,13 @@ export default function AddSeriesPage() {
   }, []);
 
   // 게시글 (다중) 선택 클릭 핸들러
-  const handlePostClick = (
-    e: React.MouseEvent,
-    post: (typeof dummyPosts)[0],
-    container: 'all' | 'series',
-  ) => {
+  const handlePostClick = (e: React.MouseEvent, post: Article, container: 'all' | 'series') => {
     e.preventDefault();
 
     const currentIndex =
       container === 'all'
-        ? allPosts.findIndex((p) => p.id === post.id)
-        : seriesPosts.findIndex((p) => p.id === post.id);
+        ? allPosts.findIndex((p) => p.articleId === post.articleId)
+        : seriesPosts.findIndex((p) => p.articleId === post.articleId);
 
     // Shift 클릭: 범위 선택
     if (e.shiftKey && rangeSelectionAnchor && rangeSelectionAnchor.container === container) {
@@ -130,7 +114,7 @@ export default function AddSeriesPage() {
       const currentPosts = container === 'all' ? allPosts : seriesPosts;
       const postsInRange = currentPosts.slice(startIndex, endIndex + 1);
 
-      const updatedSelection = postsInRange.map((post) => post.id);
+      const updatedSelection = postsInRange.map((post) => post.articleId);
 
       setSelectedPostIds(updatedSelection);
       return;
@@ -139,31 +123,33 @@ export default function AddSeriesPage() {
     // Ctrl/Cmd 클릭: 개별 선택/해제
     if (e.ctrlKey || e.metaKey) {
       // 현재 선택된 게시글들이 어떤 영역에 속하는지 확인
-      const selectedInAll = selectedPostIds.some((id) => allPosts.some((p) => p.id === id));
-      const selectedInSeries = selectedPostIds.some((id) => seriesPosts.some((p) => p.id === id));
+      const selectedInAll = selectedPostIds.some((id) => allPosts.some((p) => p.articleId === id));
+      const selectedInSeries = selectedPostIds.some((id) =>
+        seriesPosts.some((p) => p.articleId === id),
+      );
 
       // 다른 영역의 게시글을 클릭한 경우 기존 선택 해제하고 새로운 게시글만 선택
       if (
         (container === 'all' && selectedInSeries && !selectedInAll) ||
         (container === 'series' && selectedInAll && !selectedInSeries)
       ) {
-        setSelectedPostIds([post.id]);
+        setSelectedPostIds([post.articleId]);
         setRangeSelectionAnchor({ container, index: currentIndex });
         return;
       }
 
       // Ctrl/Cmd 누른 상태에서 이미 선택되어 있는 게시글을 클릭하면 선택 해제
-      if (selectedPostIds.includes(post.id)) {
-        setSelectedPostIds(selectedPostIds.filter((id) => id !== post.id));
+      if (selectedPostIds.includes(post.articleId)) {
+        setSelectedPostIds(selectedPostIds.filter((id) => id !== post.articleId));
       } else {
         // Ctrl/Cmd 누른 상태에서 이미 선택되어 있지 않은 게시글을 클릭하면 선택
-        setSelectedPostIds([...selectedPostIds, post.id]);
+        setSelectedPostIds([...selectedPostIds, post.articleId]);
       }
       return;
     }
 
     // 일반 클릭 또는 Shift 첫 클릭 시 실행: 단일 선택
-    setSelectedPostIds([post.id]);
+    setSelectedPostIds([post.articleId]);
     setRangeSelectionAnchor({ container, index: currentIndex });
   };
 
@@ -183,7 +169,7 @@ export default function AddSeriesPage() {
   const handleDrop = (e: React.DragEvent, targetContainer: 'all' | 'series') => {
     e.preventDefault();
 
-    const draggedPostIdFromData = Number(e.dataTransfer.getData('text/plain'));
+    const draggedPostIdFromData = e.dataTransfer.getData('text/plain');
 
     // 이동할 게시글 결정: 다중 선택 vs 단일 이동
     // 조건 1: 드래그된 게시글이 선택된 게시글 중 하나여야 함
@@ -198,20 +184,20 @@ export default function AddSeriesPage() {
     // 전체 게시글에서 현재 시리즈로 이동
     if (targetContainer === 'series') {
       // 1. 이동할 게시글들을 전체 게시글 목록에서 찾기
-      const postsToMoveObjects = allPosts.filter((post) => postsToMove.includes(post.id));
+      const postsToMoveObjects = allPosts.filter((post) => postsToMove.includes(post.articleId));
       if (postsToMoveObjects.length > 0) {
         // 2. 전체 게시글 목록에서 이동할 게시글들 제거
-        setAllPosts(allPosts.filter((post) => !postsToMove.includes(post.id)));
+        setAllPosts(allPosts.filter((post) => !postsToMove.includes(post.articleId)));
         // 3. 시리즈 목록에 이동할 게시글들 추가
         setSeriesPosts([...seriesPosts, ...postsToMoveObjects]);
       }
       // 시리즈에서 전체 게시글로 이동
     } else if (targetContainer === 'all') {
       // 1. 이동할 게시글들을 시리즈 목록에서 찾기
-      const postsToMoveObjects = seriesPosts.filter((post) => postsToMove.includes(post.id));
+      const postsToMoveObjects = seriesPosts.filter((post) => postsToMove.includes(post.articleId));
       if (postsToMoveObjects.length > 0) {
         // 2. 시리즈 목록에서 이동할 게시글들 제거
-        setSeriesPosts(seriesPosts.filter((post) => !postsToMove.includes(post.id)));
+        setSeriesPosts(seriesPosts.filter((post) => !postsToMove.includes(post.articleId)));
         // 3. 전체 게시글 목록에 이동할 게시글들 추가
         setAllPosts([...allPosts, ...postsToMoveObjects]);
       }
@@ -223,10 +209,10 @@ export default function AddSeriesPage() {
   };
 
   // 드래그 시작 핸들러
-  const handleDragStart = (e: React.DragEvent, postId: number) => {
+  const handleDragStart = (e: React.DragEvent, postId: string) => {
     setDraggedPostId(postId);
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', postId.toString());
+    e.dataTransfer.setData('text/plain', postId);
 
     // 다중 선택된 상태에서 선택되지 않은 게시글을 드래그하면 기존 선택 해제
     if (!selectedPostIds.includes(postId)) setSelectedPostIds([postId]);
@@ -244,10 +230,10 @@ export default function AddSeriesPage() {
 
   const onSubmit = async (data: SeriesFormData) => {
     try {
-      // 임시 더미 데이터 구조 변경
+      // 시리즈 게시글 데이터 구조 변경
       const seriesArticleList = seriesPosts.map((post, index) => ({
-        draftId: post.id.toString(),
-        articleId: post.id.toString(),
+        draftId: post.draftId,
+        articleId: post.articleId,
         displayOrder: index + 1,
       }));
 
@@ -415,14 +401,14 @@ export default function AddSeriesPage() {
               </div>
               {allPosts.map((post) => (
                 <div
-                  key={post.id}
+                  key={post.articleId}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, post.id)}
+                  onDragStart={(e) => handleDragStart(e, post.articleId)}
                   onDragEnd={handleDragEnd}
                   onClick={(e) => handlePostClick(e, post, 'all')}
                   className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                    selectedPostIds.includes(post.id) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
-                  } ${draggedPostId && selectedPostIds.includes(post.id) && 'scale-95 opacity-50'}`}
+                    selectedPostIds.includes(post.articleId) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
+                  } ${draggedPostId && selectedPostIds.includes(post.articleId) && 'scale-95 opacity-50'}`}
                 >
                   <div className='flex items-center gap-2'>
                     <Image
@@ -432,7 +418,9 @@ export default function AddSeriesPage() {
                       height={16}
                       className='size-6'
                     />
-                    <span className='text-sm text-black'>{post.title}</span>
+                    <span className='text-sm text-black'>
+                      {post.articleTitle || `게시글 ${post.articleId}`}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -473,15 +461,15 @@ export default function AddSeriesPage() {
               ) : (
                 seriesPosts.map((post) => (
                   <div
-                    key={post.id}
+                    key={post.articleId}
                     draggable
-                    onDragStart={(e) => handleDragStart(e, post.id)}
+                    onDragStart={(e) => handleDragStart(e, post.articleId)}
                     onDragEnd={handleDragEnd}
                     onClick={(e) => handlePostClick(e, post, 'series')}
                     className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                      selectedPostIds.includes(post.id) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
+                      selectedPostIds.includes(post.articleId) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
                     } ${
-                      draggedPostId && selectedPostIds.includes(post.id)
+                      draggedPostId && selectedPostIds.includes(post.articleId)
                         ? 'scale-95 opacity-30'
                         : ''
                     }`}
@@ -494,7 +482,9 @@ export default function AddSeriesPage() {
                         height={16}
                         className='size-6'
                       />
-                      <span className='text-sm text-black'>{post.title}</span>
+                      <span className='text-sm text-black'>
+                        {post.articleTitle || `게시글 ${post.articleId}`}
+                      </span>
                     </div>
                   </div>
                 ))
