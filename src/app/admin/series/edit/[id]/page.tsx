@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -85,40 +85,41 @@ export default function SeriesEditPage() {
   } | null>(null);
   const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchSeriesData = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/series/${seriesId}`);
-        if (response.ok) {
-          const data: SeriesResponse = await response.json();
-          setSeriesData(data.series);
+  const fetchSeriesData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/series/${seriesId}`);
+      if (response.ok) {
+        const data: SeriesResponse = await response.json();
+        setSeriesData(data.series);
 
-          // 폼 값 설정
-          setValue('seriesName', data.series.title);
-          setValue('seriesDescription', data.series.description);
-          if (data.series.banner) setBannerPreview(data.series.banner);
-          if (data.series.seriesArticleSummaryList) {
-            setSeriesPosts(data.series.seriesArticleSummaryList);
-            // 시리즈에 이미 포함된 게시글은 allPosts에서 제외
-            const seriesArticleIds = data.series.seriesArticleSummaryList.map(
-              (item) => item.articleId,
-            );
-            setAllPosts(dummyPosts.filter((post) => !seriesArticleIds.includes(post.articleId)));
-          }
-        } else {
-          console.error('시리즈 데이터를 불러오는데 실패했습니다.');
-          router.push('/admin/series');
+        // 폼 값 설정
+        setValue('seriesName', data.series.title);
+        setValue('seriesDescription', data.series.description);
+        if (data.series.banner) setBannerPreview(data.series.banner);
+        if (data.series.seriesArticleSummaryList) {
+          setSeriesPosts(data.series.seriesArticleSummaryList);
+          // 시리즈에 이미 포함된 게시글은 allPosts에서 제외
+          const seriesArticleIds = data.series.seriesArticleSummaryList.map(
+            (item) => item.articleId,
+          );
+          setAllPosts(dummyPosts.filter((post) => !seriesArticleIds.includes(post.articleId)));
         }
-      } catch (error) {
-        console.error('API 요청 중 오류가 발생했습니다:', error);
+      } else {
+        console.error('시리즈 데이터를 불러오는데 실패했습니다.');
         router.push('/admin/series');
-      } finally {
-        setLoading(false);
       }
-    };
-
-    if (seriesId) fetchSeriesData();
+    } catch (error) {
+      console.error('API 요청 중 오류가 발생했습니다:', error);
+      router.push('/admin/series');
+    } finally {
+      setLoading(false);
+    }
   }, [seriesId, setValue, router]);
+
+  useEffect(() => {
+    if (seriesId) fetchSeriesData();
+  }, [seriesId, fetchSeriesData]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -294,7 +295,8 @@ export default function SeriesEditPage() {
 
       if (response.ok) {
         console.log('시리즈가 성공적으로 수정되었습니다.');
-        router.push('/admin/series');
+        // 편집 완료 후 최신 데이터를 다시 불러오기
+        await fetchSeriesData();
       } else {
         console.error('시리즈 수정 중 오류가 발생했습니다.');
       }
