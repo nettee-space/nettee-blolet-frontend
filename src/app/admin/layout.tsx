@@ -102,13 +102,23 @@ const breadcrumbMap: Record<string, { parent?: string; current: string }> = {
   '/admin/dashboard': { current: '대시보드' },
   '/admin/series': { current: '시리즈 관리' },
   '/admin/series/add': { parent: '시리즈 관리', current: '시리즈 추가' },
-  '/admin/series/edit': { parent: '시리즈 관리', current: '시리즈 편집' },
+  '/admin/series/edit/[id]': { parent: '시리즈 관리', current: '시리즈 편집' },
   '/admin/posts': { current: '게시글 관리' },
   '/admin/comments': { current: '댓글 관리' },
   '/admin/comment-settings': { current: '댓글 설정' },
   '/admin/profile': { current: '계정관리' },
   '/admin/settings': { current: '블로그 설정' },
   '/admin/tools': { current: '도구' },
+};
+
+// 특정 패턴별 정규화
+const normalizePath = (path: string): string => {
+  // /admin/series/edit/4 → /admin/series/edit/[id]
+  if (path.match(/^\/admin\/series\/edit\/\d+$/)) {
+    return '/admin/series/edit/[id]';
+  }
+
+  return path;
 };
 
 function AdminSidebar() {
@@ -177,7 +187,8 @@ function AdminSidebar() {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const breadcrumb = breadcrumbMap[pathname];
+  const normalizedPath = normalizePath(pathname);
+  const breadcrumb = breadcrumbMap[normalizedPath];
 
   return (
     <SidebarProvider>

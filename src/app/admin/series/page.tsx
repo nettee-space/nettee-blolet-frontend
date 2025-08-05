@@ -208,6 +208,7 @@ export default function SeriesPage() {
                           className='h-8 justify-start gap-1 px-2 text-sm font-normal text-black hover:bg-gray-50'
                           onClick={() => {
                             setOpenPopoverId(null);
+                            router.push(`/admin/series/edit/${series.id}`);
                           }}
                         >
                           <Image src='/icons/edit.svg' alt='편집' width={16} height={16} />
