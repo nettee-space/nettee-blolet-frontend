@@ -10,6 +10,7 @@ import {
   autoformatPunctuation,
   autoformatSmartQuotes,
 } from '@platejs/autoformat';
+import { autoformatMark } from '@platejs/autoformat';
 import { insertEmptyCodeBlock } from '@platejs/code-block';
 import { createLinkNode } from '@platejs/link';
 import { toggleList } from '@platejs/list';
@@ -125,7 +126,12 @@ const autoformatBlocks: AutoformatRule[] = [
     type: KEYS.blockquote,
   },
   {
-    match: '```',
+  match: '`',
+  mode: 'mark',
+  type: KEYS.code,
+},
+  {
+    match: '``` ',
     mode: 'block',
     type: KEYS.codeBlock,
     format: (editor) => {
@@ -157,16 +163,16 @@ const autoformatBlocks: AutoformatRule[] = [
 
 const autoformatLists: AutoformatRule[] = [
   {
-  match: ['-', '- '],
-  matchByRegex: true,
-  mode: 'block',
-  type: 'list',
-  format: (editor) => {
-    toggleList(editor, {
-      listStyleType: KEYS.ul,
-    });
+    match: ['- '],
+    matchByRegex: false,
+    mode: 'block',
+    type: 'list',
+    format: (editor) => {
+      toggleList(editor, {
+        listStyleType: KEYS.ul,
+      });
+    },
   },
-},
   {
     match: [String.raw`^\d+\.$ `, String.raw`^\d+\)$ `],
     matchByRegex: true,
@@ -180,7 +186,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['- [] '],
+    match: ['[] '],
     mode: 'block',
     type: 'list',
     format: (editor) => {
@@ -194,7 +200,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['- [x] '],
+    match: ['[x] '],
     mode: 'block',
     type: 'list',
     format: (editor) => {
@@ -217,11 +223,9 @@ export const AutoformatKit = [
         ...autoformatBlocks,
         ...autoformatMarks,
         ...autoformatSmartQuotes,
-        ...autoformatPunctuation,
         ...autoformatLegal,
         ...autoformatLegalHtml,
         ...autoformatArrow,
-        ...autoformatMath,
         ...autoformatLists,
       ].map(
         (rule): AutoformatRule => ({
