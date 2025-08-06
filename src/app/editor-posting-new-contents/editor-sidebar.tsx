@@ -5,8 +5,11 @@ export default function EditorSideBar (){
         <div className="flex flex-col justify-between sm:w-[300px] w-full h-full px-[30px] text-[18px] text-[#000] leading-[30px]">
             {/* 메뉴 영역 */}
             <div>
-                <div className="py-[17px] flex justify-between items-center">
-                <Image width={96} height={25} src={'/icons/blolet.svg'} alt="BloletLogo" />
+                <div className="w-full h-20 flex justify-between items-center">
+                <Image width={96} height={24} src={'/icons/blolet.svg'} alt="BloletLogo" />
+                <button>
+                    <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} className=''/>
+                </button>
                 </div>
                 <div className="py-10">
                 <button className="flex items-center gap-3">
@@ -32,6 +35,6 @@ export default function EditorSideBar (){
                 <Image width={24} height={24} src={'/icons/profile.svg'} alt="Profile"/>
                 <p>Blolet_blogiiii</p>
             </div>
-            </div>
+        </div>
     )
 }

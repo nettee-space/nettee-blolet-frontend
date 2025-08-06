@@ -38,8 +38,10 @@ export default function EditorMain() {
   const currentStatus = uploadStatus.find(status => status.text === sampleStatus );
   return (
     <main className='sm:w-[calc(100%-300px)] w-full h-full text-[#000]'>
-      <div className='w-full py-[19px] px-[37px] flex justify-between items-center'>
-        <button></button>
+      <div className='w-full h-20 px-[37px] flex justify-between items-center'>
+        <button>
+          <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} className='rotate-180'/>
+        </button>
         <div className='flex items-center gap-[32px]'>
           {currentStatus && (
             <div className="flex items-center gap-3">
@@ -51,7 +53,6 @@ export default function EditorMain() {
             <button className='px-[18px] py-[10px] rounded-[50px] bg-[#ffffff] text-[#000] border border-[#ccc]'>미리보기</button>
             <button className='px-[18px] py-[10px] bg-[#4d4d4d] text-[#ffffff] rounded-[50px]'>게시하기</button>
           </div>
-          
         </div>
       </div>
       <div className='w-full h-fit flex flex-col items-center justify-center gap-15 pb-15 border-b border-[#e6e6e6]'>
