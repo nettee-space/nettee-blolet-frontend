@@ -2,6 +2,7 @@ import Image from "next/image";
 
 interface EditTopProps {
     open: () => void;
+    sidebar?: boolean;
 }
 
 const uploadStatus = [
@@ -27,13 +28,13 @@ const uploadStatus = [
   },
 ]
 
-export default function EditTop({ open }: EditTopProps){
+export default function EditTop({ open, sidebar }: EditTopProps){
     const sampleStatus = '게시 완료';
     const currentStatus = uploadStatus.find(status => status.text === sampleStatus );
 
     return (
-        <div className='w-full h-20 px-[37px] flex sm:justify-end justify-between items-center'>
-        <button className='sm:hidden' onClick={open}>
+        <div className={sidebar ? 'w-full h-20 px-[37px] flex justify-end items-center' : 'w-full h-20 px-[37px] flex justify-between items-center'}>
+        <button onClick={open} className={sidebar ? 'hidden' : 'flex items-center'}>
           <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} className='rotate-180'/>
         </button>
         <div className='flex items-center gap-[32px]'>
