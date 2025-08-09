@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "icons:convert": "svgr --out-dir src/shared/components/ui/icons public/icons",
+    "posticons:convert": "prettier --write 'src/shared/components/ui/icons/**/*.tsx' && eslint --fix 'src/shared/components/ui/icons/**/*.tsx'",
     "lint-staged": "lint-staged",
     "prepare": "husky"
   },
@@ -23,6 +25,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3",
+    "@svgr/cli": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
