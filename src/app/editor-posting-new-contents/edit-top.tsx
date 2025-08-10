@@ -33,7 +33,7 @@ export default function EditTop({ open, sidebar }: EditTopProps){
     const currentStatus = uploadStatus.find(status => status.text === sampleStatus );
 
     return (
-        <div className={sidebar ? 'w-full h-20 px-[37px] flex justify-end items-center' : 'w-full h-20 px-[37px] flex justify-between items-center'}>
+        <div className={sidebar ? 'w-full max-w-[1920px] h-20 px-[37px] flex justify-end items-center absolute top-0 z-50 bg-white' : 'w-full  h-20 px-[37px] max-w-[1920px] flex justify-between items-center fixed top-0 z-50 bg-white'}>
         <button onClick={open} className={sidebar ? 'hidden' : 'flex items-center'}>
           <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} className='rotate-180'/>
         </button>
