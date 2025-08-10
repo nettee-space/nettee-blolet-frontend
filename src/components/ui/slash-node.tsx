@@ -74,6 +74,31 @@ const groups: Group[] = [
     ],
   },
   {
+    group: 'Media',
+    items: [
+      {
+        focusEditor: false,
+        icon: <img src="/icons/image.svg" alt="Image" className="w-4 h-4" />,
+        keywords: ['image', 'photo'],
+        label: 'Image',
+        value: KEYS.mediaEmbed,
+        onSelect: (editor, value) => {
+          insertBlock(editor, value);
+        },
+      },
+      {
+        focusEditor: false,
+        icon: <img src="/icons/video.svg" alt="Video" className="w-4 h-4" />,
+        keywords: ['video'],
+        label: 'Video',
+        value: KEYS.video,
+        onSelect: (editor, value) => {
+          insertBlock(editor, value);
+        },
+      },
+    ],
+  },
+  {
     group: 'Basic blocks',
     items: [
       {
@@ -223,6 +248,7 @@ const groups: Group[] = [
       },
     })),
   },
+  
 ];
 
 export function SlashInputElement(

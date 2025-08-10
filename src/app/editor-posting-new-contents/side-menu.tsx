@@ -16,7 +16,7 @@ export default function SideMenu ({ close }: EditorSideBarProps){
                 <div className="py-10">
                 <button className="flex items-center gap-3">
                     <Image width={24} height={24} src={'/icons/fileadd.svg'} alt="FileAdd"/>
-                    <p className="font-semibold">내 서랍으로 이동</p>
+                    <p className="font-semibold">내 서랍으로</p>
                 </button>
                 </div>
                 <hr className="border-[#ccc] sm:w-[240px] w-[580px]" />

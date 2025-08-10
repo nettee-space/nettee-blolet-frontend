@@ -27,6 +27,7 @@ import { CommentKit } from '@/components/comment-kit';
 import { LinkKit } from '@/components/link-kit';
 import { ListKit } from '@/components/list-kit';
 import { MarkdownKit } from '@/components/markdown-kit';
+import { MediaKit } from '@/components/media-kit';
 import { SlashKit } from '@/components/slash-kit';
 import { SuggestionKit } from '@/components/suggestion-kit';
 import { TableKit } from '@/components/table-kit';
@@ -37,8 +38,6 @@ import { Editor, EditorContainer } from '@/components/ui/editor';
 import { FixedToolbar } from '@/components/ui/fixed-toolbar';
 import { H1Element, H2Element, H3Element } from '@/components/ui/heading-node';
 import { MarkToolbarButton } from '@/components/ui/mark-toolbar-button';
-import { ToolbarButton } from '@/components/ui/toolbar';
-
 
 
 const initialValue: Value = [
@@ -47,7 +46,6 @@ const initialValue: Value = [
 export default function PlateWrapper() {
   const editor = usePlateEditor({
     plugins: [
-    
       BoldPlugin,
       ItalicPlugin,
       UnderlinePlugin,
@@ -66,6 +64,7 @@ export default function PlateWrapper() {
       ...CodeBlockKit,
       ...BasicBlocksKit,
       ...BasicMarksKit,
+      ...MediaKit,
       H1Plugin.withComponent(H1Element),
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),

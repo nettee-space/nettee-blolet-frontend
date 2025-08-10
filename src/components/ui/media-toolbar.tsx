@@ -1,8 +1,6 @@
 'use client';
 
-import * as React from 'react';
 
-import type { WithRequiredKey } from 'platejs';
 
 import {
   FloatingMedia as FloatingMediaPrimitive,
@@ -12,14 +10,18 @@ import {
 } from '@platejs/media/react';
 import { cva } from 'class-variance-authority';
 import { Link, Trash2Icon } from 'lucide-react';
+import type { WithRequiredKey } from 'platejs';
 import {
   useEditorRef,
   useEditorSelector,
   useElement,
+  useFocused,
   useReadOnly,
   useRemoveNodeButton,
   useSelected,
 } from 'platejs/react';
+
+import * as React from 'react';
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
@@ -30,7 +32,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 
 import { CaptionButton } from './caption';
-
 const inputVariants = cva(
   'flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm'
 );
@@ -45,30 +46,32 @@ export function MediaToolbar({
   const editor = useEditorRef();
   const readOnly = useReadOnly();
   const selected = useSelected();
-
+  const isFocusedLast = useFocused();
   const selectionCollapsed = useEditorSelector(
     (editor) => !editor.api.isExpanded(),
     []
   );
   const isImagePreviewOpen = useImagePreviewValue('isOpen', editor.id);
-  const isOpen =
-    !readOnly && selected && selectionCollapsed && !isImagePreviewOpen;
+  const open =
+    isFocusedLast &&
+    !readOnly &&
+    selected &&
+    selectionCollapsed &&
+    !isImagePreviewOpen;
   const isEditing = useFloatingMediaValue('isEditing');
 
   React.useEffect(() => {
-    if (!isOpen && isEditing) {
+    if (!open && isEditing) {
       FloatingMediaStore.set('isEditing', false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [open]);
 
   const element = useElement();
   const { props: buttonProps } = useRemoveNodeButton({ element });
 
-  if (readOnly) return <>{children}</>;
-
   return (
-    <Popover open={isOpen} modal={false}>
+    <Popover open={open} modal={false}>
       <PopoverAnchor>{children}</PopoverAnchor>
 
       <PopoverContent
