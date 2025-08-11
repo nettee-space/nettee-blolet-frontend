@@ -3,6 +3,8 @@
 
 
 import { AIChatPlugin } from '@platejs/ai/react';
+import { insertImagePlaceholder } from '@platejs/media';
+import { insertNodes } from 'slate';
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -81,19 +83,9 @@ const groups: Group[] = [
         icon: <img src="/icons/image.svg" alt="Image" className="w-4 h-4" />,
         keywords: ['image', 'photo'],
         label: 'Image',
-        value: KEYS.mediaEmbed,
+        value: KEYS.placeholder,
         onSelect: (editor, value) => {
-          insertBlock(editor, value);
-        },
-      },
-      {
-        focusEditor: false,
-        icon: <img src="/icons/video.svg" alt="Video" className="w-4 h-4" />,
-        keywords: ['video'],
-        label: 'Video',
-        value: KEYS.video,
-        onSelect: (editor, value) => {
-          insertBlock(editor, value);
+          insertNodes(editor, Node, insertImagePlaceholder)
         },
       },
     ],

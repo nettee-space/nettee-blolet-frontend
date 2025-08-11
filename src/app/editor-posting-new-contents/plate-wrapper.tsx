@@ -23,6 +23,7 @@ import { BlockPlaceholderKit } from '@/components/block-placeholder-kit';
 import { CalloutKit } from '@/components/callout-kit';
 import { CodeBlockKit } from '@/components/code-block-kit';
 import { CommentKit } from '@/components/comment-kit';
+import { DndKit } from '@/components/dnd-kit';
 import { LinkKit } from '@/components/link-kit';
 import { ListKit } from '@/components/list-kit';
 import { MarkdownKit } from '@/components/markdown-kit';
@@ -65,6 +66,7 @@ export default function PlateWrapper() {
       ...BasicBlocksKit,
       ...BasicMarksKit,
       ...MediaKit,
+      ...DndKit,
       H1Plugin.withComponent(H1Element),
       H2Plugin.withComponent(H2Element),
       H3Plugin.withComponent(H3Element),
