@@ -1,8 +1,6 @@
 'use client';
 
-import * as React from 'react';
 
-import type { Point, TElement } from 'platejs';
 
 import {
   type ComboboxItemProps,
@@ -24,7 +22,10 @@ import {
   useHTMLInputCursorState,
 } from '@platejs/combobox/react';
 import { cva } from 'class-variance-authority';
+import type { Point, TElement } from 'platejs';
 import { useComposedRef, useEditorRef } from 'platejs/react';
+
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
