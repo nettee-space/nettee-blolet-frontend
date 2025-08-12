@@ -1,5 +1,7 @@
 'use client';
 
+import * as React from 'react';
+
 import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd';
 import { expandListItemsWithChildren } from '@platejs/list';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
@@ -15,7 +17,6 @@ import {
   usePluginOption,
 } from 'platejs/react';
 import { useSelected } from 'platejs/react';
-import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -503,15 +504,11 @@ const calculatePreviewTop = (
 
 const calcDragButtonTop = (editor: PlateEditor, element: TElement): number => {
   const child = editor.api.toDOMNode(element);
-
-  if (!(child instanceof Element)) {
-    // DOM이 아직 없거나 잘못된 경우 안전하게 0 반환
-    return 0;
+if (!child) {
+    return 0; // DOM 없으면 기본값 반환
   }
-
   const currentMarginTopString = window.getComputedStyle(child).marginTop;
   const currentMarginTop = Number(currentMarginTopString.replace('px', ''));
 
   return currentMarginTop;
 };
-

@@ -1,7 +1,9 @@
 'use client';
 
+import * as React from 'react';
 
 import type { TResolvedSuggestion } from '@platejs/suggestion';
+
 import {
   acceptSuggestion,
   getSuggestionKey,
@@ -23,16 +25,14 @@ import {
 } from 'platejs';
 import { useEditorPlugin, usePluginOption } from 'platejs/react';
 
-import * as React from 'react';
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   type TDiscussion,
   discussionPlugin,
 } from '@/components/discussion-kit';
 import { suggestionPlugin } from '@/components/suggestion-kit';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 import {
   type TComment,

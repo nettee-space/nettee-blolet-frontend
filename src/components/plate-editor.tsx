@@ -1,54 +1,30 @@
 'use client';
 
-import { Plate, usePlateEditor } from 'platejs/react';
+import * as React from 'react';
 
-import { BasicNodesKit } from '@/components/basic-nodes-kit';
+import { Plate, usePlateEditor, useEditorState } from 'platejs/react';
+
+import { EditorKit } from '@/components/editor-kit';
 import { Editor, EditorContainer } from '@/components/ui/editor';
-
+import { EmptyText } from 'platejs';
+import { isEmpty } from 'slate';
 export function PlateEditor() {
   const editor = usePlateEditor({
-    plugins: BasicNodesKit,
+    plugins: EditorKit,
     value,
   });
-
+  const isEditorEmpty = isEmpty(value)
   return (
     <Plate editor={editor}>
       <EditorContainer>
-        <Editor variant="demo" placeholder="Type..." />
+        <Editor 
+        placeholder={isEditorEmpty ?  `텍스트를 입력해 주세요. \n “/” 입력하여 명령어를 사용할 수 있습니다.`: ''}
+        />
       </EditorContainer>
     </Plate>
   );
 }
 
 const value = [
-  {
-    children: [{ text: 'Basic Editor' }],
-    type: 'h1',
-  },
-  {
-    children: [{ text: 'Heading 2' }],
-    type: 'h2',
-  },
-  {
-    children: [{ text: 'Heading 3' }],
-    type: 'h3',
-  },
-  {
-    children: [{ text: 'This is a blockquote element' }],
-    type: 'blockquote',
-  },
-  {
-    children: [
-      { text: 'Basic marks: ' },
-      { bold: true, text: 'bold' },
-      { text: ', ' },
-      { italic: true, text: 'italic' },
-      { text: ', ' },
-      { text: 'underline', underline: true },
-      { text: ', ' },
-      { strikethrough: true, text: 'strikethrough' },
-      { text: '.' },
-    ],
-    type: 'p',
-  },
+  
 ];

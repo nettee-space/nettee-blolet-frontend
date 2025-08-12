@@ -1,10 +1,10 @@
 'use client';
 
+import * as React from 'react';
 
+import type { PlateEditor, PlateElementProps } from 'platejs/react';
 
 import { AIChatPlugin } from '@platejs/ai/react';
-import { insertImagePlaceholder } from '@platejs/media';
-import { insertNodes } from 'slate';
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -13,9 +13,6 @@ import {
   Heading1Icon,
   Heading2Icon,
   Heading3Icon,
-  Heading4Icon,
-  Heading5Icon,
-  Heading6Icon,
   LightbulbIcon,
   ListIcon,
   ListOrdered,
@@ -28,10 +25,7 @@ import {
   TableOfContentsIcon,
 } from 'lucide-react';
 import { type TComboboxInputElement, KEYS } from 'platejs';
-import type { PlateEditor, PlateElementProps } from 'platejs/react';
 import { PlateElement } from 'platejs/react';
-
-import * as React from 'react';
 
 import {
   insertBlock,
@@ -76,21 +70,6 @@ const groups: Group[] = [
     ],
   },
   {
-    group: 'Media',
-    items: [
-      {
-        focusEditor: false,
-        icon: <img src="/icons/image.svg" alt="Image" className="w-4 h-4" />,
-        keywords: ['image', 'photo'],
-        label: 'Image',
-        value: KEYS.placeholder,
-        onSelect: (editor, value) => {
-          insertNodes(editor, Node, insertImagePlaceholder)
-        },
-      },
-    ],
-  },
-  {
     group: 'Basic blocks',
     items: [
       {
@@ -102,72 +81,54 @@ const groups: Group[] = [
       {
         icon: <Heading1Icon />,
         keywords: ['title', 'h1'],
-        label: 'heading1',
+        label: 'Heading 1',
         value: KEYS.h1,
       },
       {
         icon: <Heading2Icon />,
         keywords: ['subtitle', 'h2'],
-        label: 'heading2',
+        label: 'Heading 2',
         value: KEYS.h2,
       },
       {
         icon: <Heading3Icon />,
         keywords: ['subtitle', 'h3'],
-        label: 'heading3',
+        label: 'Heading 3',
         value: KEYS.h3,
-      },
-      {
-        icon: <Heading3Icon />,
-        keywords: ['subtitle', 'h4'],
-        label: 'heading4',
-        value: KEYS.h4,
-      },
-      {
-        icon: <Heading3Icon />,
-        keywords: ['subtitle', 'h5'],
-        label: 'heading5',
-        value: KEYS.h5,
-      },
-      {
-        icon: <Heading3Icon />,
-        keywords: ['subtitle', 'h6'],
-        label: 'heading6',
-        value: KEYS.h6,
       },
       {
         icon: <ListIcon />,
         keywords: ['unordered', 'ul', '-'],
-        label: 'bullet',
+        label: 'Bulleted list',
         value: KEYS.ul,
       },
       {
         icon: <ListOrdered />,
         keywords: ['ordered', 'ol', '1'],
-        label: 'number',
+        label: 'Numbered list',
         value: KEYS.ol,
       },
       {
         icon: <Square />,
         keywords: ['checklist', 'task', 'checkbox', '[]'],
-        label: 'checkbox',
+        label: 'To-do list',
         value: KEYS.listTodo,
       },
       {
         icon: <ChevronRightIcon />,
         keywords: ['collapsible', 'expandable'],
-        label: 'toggle',
+        label: 'Toggle',
         value: KEYS.toggle,
       },
       {
         icon: <Code2 />,
         keywords: ['```'],
-        label: 'codeblock',
+        label: 'Code Block',
         value: KEYS.codeBlock,
       },
       {
         icon: <Table />,
-        label: 'table',
+        label: 'Table',
         value: KEYS.table,
       },
       {
@@ -240,7 +201,6 @@ const groups: Group[] = [
       },
     })),
   },
-  
 ];
 
 export function SlashInputElement(

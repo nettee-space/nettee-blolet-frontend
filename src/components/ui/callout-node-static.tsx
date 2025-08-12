@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as React from 'react';
 
 import type { SlateElementProps } from 'platejs';
-import { SlateElement } from 'platejs';
 
-import * as React from 'react';
+import { SlateElement } from 'platejs';
 
 import { cn } from '@/lib/utils';
 

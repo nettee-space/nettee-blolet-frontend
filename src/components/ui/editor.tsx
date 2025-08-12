@@ -1,12 +1,12 @@
 'use client';
 
+import * as React from 'react';
 
 import type { VariantProps } from 'class-variance-authority';
-import { cva } from 'class-variance-authority';
 import type { PlateContentProps, PlateViewProps } from 'platejs/react';
-import { PlateContainer, PlateContent, PlateView } from 'platejs/react';
 
-import * as React from 'react';
+import { cva } from 'class-variance-authority';
+import { PlateContainer, PlateContent, PlateView } from 'platejs/react';
 
 import { cn } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ const editorContainerVariants = cva(
           'has-[[data-slate-editor]:focus]:border-brand/50 has-[[data-slate-editor]:focus]:ring-2 has-[[data-slate-editor]:focus]:ring-brand/30',
           'has-aria-disabled:border-input has-aria-disabled:bg-muted'
         ),
-        default: 'h-auto',
+        default: 'h-full',
         demo: 'h-[650px]',
         select: cn(
           'group rounded-md border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
@@ -48,6 +48,7 @@ export function EditorContainer({
         className
       )}
       {...props}
+      
     />
   );
 }
@@ -57,7 +58,7 @@ const editorVariants = cva(
     'group/editor',
     'relative w-full cursor-text overflow-x-hidden break-words whitespace-pre-wrap select-text',
     'rounded-md ring-offset-background focus-visible:outline-none',
-    'placeholder:text-muted-foreground/80 **:data-slate-placeholder:!top-1/2 **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100! **:data-slate-placeholder:whitespace-pre-line',
+    'placeholder:text-muted-foreground/80 **:data-slate-placeholder:!top-1/2 **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!',
     '[&_strong]:font-bold'
   ),
   {
@@ -72,14 +73,10 @@ const editorVariants = cva(
         true: 'ring-2 ring-ring ring-offset-2',
       },
       variant: {
-        ai: 'w-full px-0 text-base md:text-sm',
-        aiChat:
-          'max-h-[min(70vh,320px)] w-full max-w-[700px] overflow-y-auto px-3 py-2 text-base md:text-sm',
         comment: cn('rounded-none border-none bg-transparent text-sm'),
         default:
-          'size-full text-base placeholder:whitespace-pre-line',
-        demo: 'size-full px-16 pt-4 pb-72 text-base sm:px-[max(64px,calc(50%-350px))]',
-        fullWidth: 'size-full text-base sm:px-24',
+          'size-full py-15 px-[90px] text-base',
+        fullWidth: 'size-full px-16 pt-4 pb-72 text-base sm:px-24',
         none: '',
         select: 'px-3 py-2 text-base data-readonly:w-fit',
       },
@@ -92,6 +89,7 @@ export type EditorProps = PlateContentProps &
 
 export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
   ({ className, disabled, focused, variant, ...props }, ref) => {
+
     return (
       <PlateContent
         ref={ref}

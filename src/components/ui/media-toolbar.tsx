@@ -1,6 +1,8 @@
 'use client';
 
+import * as React from 'react';
 
+import type { WithRequiredKey } from 'platejs';
 
 import {
   FloatingMedia as FloatingMediaPrimitive,
@@ -10,7 +12,6 @@ import {
 } from '@platejs/media/react';
 import { cva } from 'class-variance-authority';
 import { Link, Trash2Icon } from 'lucide-react';
-import type { WithRequiredKey } from 'platejs';
 import {
   useEditorRef,
   useEditorSelector,
@@ -21,8 +22,6 @@ import {
   useSelected,
 } from 'platejs/react';
 
-import * as React from 'react';
-
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Popover,
@@ -32,6 +31,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 
 import { CaptionButton } from './caption';
+
 const inputVariants = cva(
   'flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm'
 );

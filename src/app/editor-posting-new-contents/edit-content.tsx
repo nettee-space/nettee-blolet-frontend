@@ -7,7 +7,7 @@ export default function EditContent() {
   const [tags, setTags] = useState(['프론트엔드', 'React', 'Javascript']);
 
   return (
-      <div className='w-full h-fit flex flex-col items-center justify-center gap-15 pb-15 border-b border-[#e6e6e6]'>
+      <div className='w-full h-fit flex flex-col items-center justify-center gap-15 pb-15 px-[90px] border-b border-[#e6e6e6]'>
         <div className='w-full text-[40px]'>
           <input className="placeholder:text-[#999] font-bold" placeholder='제목 없음' type='text'/>
         </div>
