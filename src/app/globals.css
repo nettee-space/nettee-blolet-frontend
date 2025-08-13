@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@plugin "tailwind-scrollbar-hide";
-@import "tw-animate-css";
+@plugin "tailwind-scrollbar";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-	font-family: 'Pretendard Variable';
-	font-weight: 45 920;
-	font-style: normal;
-	font-display: swap;
-	src: url('/fonts/woff2/PretendardVariable.woff2') format('woff2-variations');
+  font-family: 'Pretendard Variable';
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/woff2/PretendardVariable.woff2') format('woff2-variations');
 }
 
 @theme inline {
@@ -143,4 +143,7 @@ body {
   color: rgba(0, 0, 0, 0.4);
   position: absolute;
   pointer-events: none;
+}
+#root::-webkit-scrollbar-button {
+  display: none; /* 화살표 제거 */
 }

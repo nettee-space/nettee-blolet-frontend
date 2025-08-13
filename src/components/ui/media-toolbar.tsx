@@ -22,6 +22,14 @@ import {
 import Image from 'next/image';
 import * as React from 'react';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 
 import { CaptionButton } from './caption';
@@ -63,6 +71,12 @@ export function MediaToolbar({
       <PopoverContent
         className='w-fit overflow-hidden rounded-[10px] p-0'
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={(event) => {
+          const target = event.target as Element; // 타입 단언
+          if (target.closest('[data-link-popover]')) {
+            event.preventDefault();
+          }
+        }}
       >
         {isEditing ? (
           <div className='flex w-[330px] flex-col'>
@@ -81,9 +95,6 @@ export function MediaToolbar({
         ) : (
           <div className='box-content flex h-fit items-center gap-5 divide-x px-5 py-3 text-[#4D4D4D]'>
             <div className='flex gap-5 pr-5'>
-              <FloatingMediaPrimitive.EditButton className='hover:rounded-[5px] hover:bg-[#f2f2f2]'>
-                <Image src={'/icons/link.svg'} alt='link' width={24} height={24} />
-              </FloatingMediaPrimitive.EditButton>
               <CaptionButton
                 className='h-6 p-0 hover:rounded-[5px] hover:bg-[#f2f2f2]'
                 size='default'
@@ -92,6 +103,20 @@ export function MediaToolbar({
                 <Image src={'/icons/caption.svg'} alt='caption' width={24} height={24} />
               </CaptionButton>
             </div>
+            <Dialog>
+              <DialogTrigger>
+                <Image src={'/icons/link.svg'} alt='link' width={24} height={24} />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete your account and
+                    remove your data from our servers.
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
 
             <button className='hover:rounded-[5px] hover:bg-[#f2f2f2]' {...buttonProps}>
               <Image src={'/icons/trash.svg'} alt='delete' height={24} width={24} />

@@ -9,7 +9,7 @@ export default function SideBarTop({ close }: SideBarTopProps) {
     <div className='flex w-full items-center justify-between pb-8'>
       <Image width={100} height={26} src={'/icons/blolet.svg'} alt='BloletLogo' />
       <button onClick={close}>
-        <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} className='' />
+        <Image src={'/icons/SignIn.svg'} alt='사이드 바 열기' width={24} height={24} />
       </button>
     </div>
   );
