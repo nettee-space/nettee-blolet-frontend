@@ -5,11 +5,19 @@ import { useState } from 'react';
 
 export default function EditContent() {
   const [tags, setTags] = useState(['프론트엔드', 'React', 'Javascript']);
-
+  const handleMaxLength = (e: React.FormEvent<HTMLInputElement>, maxLength: number) => {
+    const inputElement = e.target as HTMLInputElement;
+    const { value } = inputElement;
+    if (value.length > maxLength) {
+      inputElement.value = value.substr(0, maxLength);
+    }
+  };
   return (
       <div className='w-full h-fit flex flex-col items-center justify-center gap-15 pb-15 px-[90px] border-b border-[#e6e6e6]'>
         <div className='w-full text-[40px]'>
-          <input className="placeholder:text-[#999] font-bold" placeholder='제목 없음' type='text'/>
+          <input className="placeholder:text-[#999] font-bold" placeholder='제목 없음' type='text' onInput={(e) => {
+            handleMaxLength(e, 30);
+          }}/>
         </div>
         <div className='w-full text-[18px]'>
           <ul className='w-full flex flex-col items-start gap-6 font-normal leading-[30px]'>

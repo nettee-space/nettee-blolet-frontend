@@ -1,9 +1,5 @@
 'use client';
 
-import * as React from 'react';
-
-import type { WithRequiredKey } from 'platejs';
-
 import {
   FloatingMedia as FloatingMediaPrimitive,
   FloatingMediaStore,
@@ -12,6 +8,7 @@ import {
 } from '@platejs/media/react';
 import { cva } from 'class-variance-authority';
 import { Link, Trash2Icon } from 'lucide-react';
+import type { WithRequiredKey } from 'platejs';
 import {
   useEditorRef,
   useEditorSelector,
@@ -22,18 +19,15 @@ import {
   useSelected,
 } from 'platejs/react';
 
-import { Button, buttonVariants } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-} from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
+import * as React from 'react';
+
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 
 import { CaptionButton } from './caption';
 
 const inputVariants = cva(
-  'flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm'
+  'flex h-[28px] w-full rounded-[10px] border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm',
 );
 
 export function MediaToolbar({
@@ -47,17 +41,9 @@ export function MediaToolbar({
   const readOnly = useReadOnly();
   const selected = useSelected();
   const isFocusedLast = useFocused();
-  const selectionCollapsed = useEditorSelector(
-    (editor) => !editor.api.isExpanded(),
-    []
-  );
+  const selectionCollapsed = useEditorSelector((editor) => !editor.api.isExpanded(), []);
   const isImagePreviewOpen = useImagePreviewValue('isOpen', editor.id);
-  const open =
-    isFocusedLast &&
-    !readOnly &&
-    selected &&
-    selectionCollapsed &&
-    !isImagePreviewOpen;
+  const open = isFocusedLast && !readOnly && selected && selectionCollapsed && !isImagePreviewOpen;
   const isEditing = useFloatingMediaValue('isEditing');
 
   React.useEffect(() => {
@@ -75,40 +61,41 @@ export function MediaToolbar({
       <PopoverAnchor>{children}</PopoverAnchor>
 
       <PopoverContent
-        className="w-auto p-1"
+        className='w-fit overflow-hidden rounded-[10px] p-0'
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         {isEditing ? (
-          <div className="flex w-[330px] flex-col">
-            <div className="flex items-center">
-              <div className="flex items-center pr-1 pl-2 text-muted-foreground">
-                <Link className="size-4" />
+          <div className='flex w-[330px] flex-col'>
+            <div className='flex items-center'>
+              <div className='text-muted-foreground flex items-center pr-1 pl-2'>
+                <Link className='size-4' />
               </div>
 
               <FloatingMediaPrimitive.UrlInput
                 className={inputVariants()}
-                placeholder="Paste the embed link..."
+                placeholder='Paste the embed link...'
                 options={{ plugin }}
               />
             </div>
           </div>
         ) : (
-          <div className="box-content flex items-center">
-            <FloatingMediaPrimitive.EditButton
-              className={buttonVariants({ size: 'sm', variant: 'ghost' })}
-            >
-              Edit link
-            </FloatingMediaPrimitive.EditButton>
+          <div className='box-content flex h-fit items-center gap-5 divide-x px-5 py-3 text-[#4D4D4D]'>
+            <div className='flex gap-5 pr-5'>
+              <FloatingMediaPrimitive.EditButton className='hover:rounded-[5px] hover:bg-[#f2f2f2]'>
+                <Image src={'/icons/link.svg'} alt='link' width={24} height={24} />
+              </FloatingMediaPrimitive.EditButton>
+              <CaptionButton
+                className='h-6 p-0 hover:rounded-[5px] hover:bg-[#f2f2f2]'
+                size='default'
+                variant='link'
+              >
+                <Image src={'/icons/caption.svg'} alt='caption' width={24} height={24} />
+              </CaptionButton>
+            </div>
 
-            <CaptionButton size="sm" variant="ghost">
-              Caption
-            </CaptionButton>
-
-            <Separator orientation="vertical" className="mx-1 h-6" />
-
-            <Button size="sm" variant="ghost" {...buttonProps}>
-              <Trash2Icon />
-            </Button>
+            <button className='hover:rounded-[5px] hover:bg-[#f2f2f2]' {...buttonProps}>
+              <Image src={'/icons/trash.svg'} alt='delete' height={24} width={24} />
+            </button>
           </div>
         )}
       </PopoverContent>

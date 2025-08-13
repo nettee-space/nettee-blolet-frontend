@@ -81,7 +81,8 @@ export const EditorKit = [
   // Parsers
   ...DocxKit,
   ...MarkdownKit,
-
+  ...FloatingToolbarKit,
+  ...BlockPlaceholderKit,
 ];
 
 export type MyEditor = TPlateEditor<Value, (typeof EditorKit)[number]>;

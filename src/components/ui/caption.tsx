@@ -1,9 +1,5 @@
 'use client';
 
-import * as React from 'react';
-
-import type { VariantProps } from 'class-variance-authority';
-
 import {
   Caption as CaptionPrimitive,
   CaptionTextarea as CaptionTextareaPrimitive,
@@ -11,7 +7,10 @@ import {
   useCaptionButtonState,
 } from '@platejs/caption/react';
 import { createPrimitiveComponent } from '@udecode/cn';
+import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
+
+import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -33,19 +32,11 @@ export function Caption({
   align,
   className,
   ...props
-}: React.ComponentProps<typeof CaptionPrimitive> &
-  VariantProps<typeof captionVariants>) {
-  return (
-    <CaptionPrimitive
-      {...props}
-      className={cn(captionVariants({ align }), className)}
-    />
-  );
+}: React.ComponentProps<typeof CaptionPrimitive> & VariantProps<typeof captionVariants>) {
+  return <CaptionPrimitive {...props} className={cn(captionVariants({ align }), className)} />;
 }
 
-export function CaptionTextarea(
-  props: React.ComponentProps<typeof CaptionTextareaPrimitive>
-) {
+export function CaptionTextarea(props: React.ComponentProps<typeof CaptionTextareaPrimitive>) {
   return (
     <CaptionTextareaPrimitive
       {...props}
@@ -53,7 +44,7 @@ export function CaptionTextarea(
         'mt-2 w-full resize-none border-none bg-inherit p-0 font-[inherit] text-inherit',
         'focus:outline-none focus:[&::placeholder]:opacity-0',
         'text-center print:placeholder:text-transparent',
-        props.className
+        props.className,
       )}
     />
   );
