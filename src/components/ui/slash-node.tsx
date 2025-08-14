@@ -38,6 +38,7 @@ import {
   InlineComboboxInput,
   InlineComboboxItem,
 } from './inline-combobox';
+import { insertLink } from '@platejs/link';
 
 type Group = {
   group: string;
@@ -159,6 +160,26 @@ const groups: Group[] = [
       ...item,
       onSelect: (editor, value) => {
         insertBlock(editor, value);
+      },
+    })),
+  },
+  {
+    group: 'Link',
+    items: [
+      {
+        focusEditor: true,
+        icon: <SparklesIcon />,
+        keywords: ['link'],
+        label: 'Link',
+        value: KEYS.link,
+      },
+    ].map((item) => ({
+      ...item,
+      onSelect: (editor, value) => {
+        insertLink(editor, {
+          url: value,
+        });
+        insert;
       },
     })),
   },

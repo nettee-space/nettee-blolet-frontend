@@ -36,10 +36,9 @@ import { SuggestionKit } from '@/components/suggestion-kit';
 import { TableKit } from '@/components/table-kit';
 import { TocKit } from '@/components/toc-kit';
 import { ToggleKit } from '@/components/toggle-kit';
+import { FontColorPlugin } from '@platejs/basic-styles/react';
 
 export const EditorKit = [
-  ...CopilotKit,
-
   // Elements
   ...BasicBlocksKit,
   ...CodeBlockKit,
@@ -53,7 +52,6 @@ export const EditorKit = [
   ...DateKit,
   ...LinkKit,
   ...MentionKit,
-
   // Marks
   ...BasicMarksKit,
   ...FontKit,

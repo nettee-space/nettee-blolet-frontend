@@ -103,21 +103,6 @@ export function MediaToolbar({
                 <Image src={'/icons/caption.svg'} alt='caption' width={24} height={24} />
               </CaptionButton>
             </div>
-            <Dialog>
-              <DialogTrigger>
-                <Image src={'/icons/link.svg'} alt='link' width={24} height={24} />
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete your account and
-                    remove your data from our servers.
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-
             <button className='hover:rounded-[5px] hover:bg-[#f2f2f2]' {...buttonProps}>
               <Image src={'/icons/trash.svg'} alt='delete' height={24} width={24} />
             </button>
