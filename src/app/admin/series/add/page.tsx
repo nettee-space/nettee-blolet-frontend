@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +40,22 @@ const convertToBase64 = (file: File): Promise<string> => {
 };
 
 export default function AddSeriesPage() {
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [allPosts, setAllPosts] = useState<Article[]>(dummyPosts);
+  const [seriesPosts, setSeriesPosts] = useState<Article[]>([]);
+  const [draggedPostId, setDraggedPostId] = useState<string | null>(null); // 현재 드래그되고 있는 게시글 id
+  const [dragOverContainer, setDragOverContainer] = useState<'all' | 'series' | null>(null); // 마우스가 어떤 드롭 영역 위에 있는지(전체 게시글 또는 현재 시리즈)
+  const [selectedPostIds, setSelectedPostIds] = useState<string[]>([]); // 다중 선택된 게시글 ID들
+  const [rangeSelectionAnchor, setRangeSelectionAnchor] = useState<{
+    container: 'all' | 'series';
+    index: number;
+  } | null>(null); // Shift를 누른 상태에서 범위 선택을 시작한 게시글의 인덱스
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState<boolean>(false); // 이미지 삭제 확인 모달
+  const [dropIndicatorIndex, setDropIndicatorIndex] = useState<number | null>(null); // 드롭 위치 표시용
+
+  const seriesPostRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const router = useRouter();
 
   const {
@@ -54,18 +70,10 @@ export default function AddSeriesPage() {
     },
   });
 
-  const [bannerImage, setBannerImage] = useState<File | null>(null);
-  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
-  const [allPosts, setAllPosts] = useState<Article[]>(dummyPosts);
-  const [seriesPosts, setSeriesPosts] = useState<Article[]>([]);
-  const [draggedPostId, setDraggedPostId] = useState<string | null>(null); // 현재 드래그되고 있는 게시글 id
-  const [dragOverContainer, setDragOverContainer] = useState<'all' | 'series' | null>(null); // 마우스가 어떤 드롭 영역 위에 있는지(전체 게시글 또는 현재 시리즈)
-  const [selectedPostIds, setSelectedPostIds] = useState<string[]>([]); // 다중 선택된 게시글 ID들
-  const [rangeSelectionAnchor, setRangeSelectionAnchor] = useState<{
-    container: 'all' | 'series';
-    index: number;
-  } | null>(null); // Shift를 누른 상태에서 범위 선택을 시작한 게시글의 인덱스
-  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState<boolean>(false); // 이미지 삭제 확인 모달
+  // seriesPosts가 변경될 때마다 refs 배열 크기를 맞추기
+  useEffect(() => {
+    seriesPostRefs.current = seriesPostRefs.current.slice(0, seriesPosts.length);
+  }, [seriesPosts.length]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -153,16 +161,52 @@ export default function AddSeriesPage() {
     setRangeSelectionAnchor({ container, index: currentIndex });
   };
 
+  // 드롭 위치 계산 함수
+  const getDropIndexInSeries = (e: React.DragEvent): number => {
+    const seriesItems = seriesPostRefs.current.filter(Boolean);
+    // 기본값을 맨 끝으로 설정, 만약 어떤 게시글보다도 아래에 마우스가 있으면 맨 끝에 삽입
+    let dropIndex = seriesItems.length;
+
+    for (let i = 0; i < seriesItems.length; i++) {
+      const item = seriesItems[i];
+      if (!item) continue;
+
+      const rect = item.getBoundingClientRect();
+      const mouseY = e.clientY; // 마우스 위치 Y 좌표
+      const itemCenterY = rect.top + rect.height / 2; // 각 게시글 중앙 위치
+
+      // 마우스가 게시글 중앙선 위에 있으면 해당 게시글 위에 삽입 (dropIndex = i)
+      // 마우스가 게시글 중앙선 아래에 있으면 다음 게시글과의 사이 또는 맨 끝에 삽입 (계속 탐색)
+      if (mouseY < itemCenterY) {
+        dropIndex = i;
+        break;
+      }
+    }
+
+    return dropIndex;
+  };
+
   // 드래그 중 마우스가 어떤 드롭 영역 위에 있는지 업데이트
   const handleDragOver = (e: React.DragEvent, container: 'all' | 'series') => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     setDragOverContainer(container);
+
+    // 시리즈 컨테이너 위일 경우 드롭 위치 표시
+    if (container === 'series') {
+      const dropIndex = getDropIndexInSeries(e);
+      setDropIndicatorIndex(dropIndex); // 파란색 라인 위치 업데이트
+    } else {
+      setDropIndicatorIndex(null);
+    }
   };
 
   // 드래그된 게시글이 드롭 영역을 벗어날 때 호출
   const handleDragLeave = (e: React.DragEvent) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverContainer(null);
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setDragOverContainer(null);
+      setDropIndicatorIndex(null);
+    }
   };
 
   // 드래그된 게시글을 드롭 영역에 놓을 때 호출
@@ -172,33 +216,50 @@ export default function AddSeriesPage() {
     const draggedPostIdFromData = e.dataTransfer.getData('text/plain');
 
     // 이동할 게시글 결정: 다중 선택 vs 단일 이동
-    // 조건 1: 드래그된 게시글이 선택된 게시글 중 하나여야 함
-    // 조건 2: 선택된 게시글이 2개 이상이어야 함 (다중 선택 상태)
-    // → 두 조건 모두 만족하면 선택된 모든 게시글을 이동
-    // → 그렇지 않으면 드래그된 게시글만 단독 이동
     const postsToMove =
       selectedPostIds.includes(draggedPostIdFromData) && selectedPostIds.length > 1
         ? selectedPostIds
         : [draggedPostIdFromData];
 
-    // 전체 게시글에서 현재 시리즈로 이동
+    // 시리즈 내에서 순서 변경
     if (targetContainer === 'series') {
-      // 1. 이동할 게시글들을 전체 게시글 목록에서 찾기
-      const postsToMoveObjects = allPosts.filter((post) => postsToMove.includes(post.articleId));
-      if (postsToMoveObjects.length > 0) {
-        // 2. 전체 게시글 목록에서 이동할 게시글들 제거
-        setAllPosts(allPosts.filter((post) => !postsToMove.includes(post.articleId)));
-        // 3. 시리즈 목록에 이동할 게시글들 추가
-        setSeriesPosts([...seriesPosts, ...postsToMoveObjects]);
+      // 드래그된 게시글이 시리즈에 이미 있는 경우 - 순서 변경
+      const isReorderingInSeries = seriesPosts.some((post) => postsToMove.includes(post.articleId));
+
+      if (isReorderingInSeries) {
+        // 시리즈 내 순서 변경 로직
+        const dropIndex = getDropIndexInSeries(e);
+
+        // 이동할 게시글들을 시리즈에서 찾기
+        const postsToMoveObjects = seriesPosts.filter((post) =>
+          postsToMove.includes(post.articleId),
+        );
+        // 이동할 게시글들을 제외한 나머지 게시글들
+        const remainingPosts = seriesPosts.filter((post) => !postsToMove.includes(post.articleId));
+
+        // 새로운 배열 생성: dropIndex 위치에 이동할 게시글들 삽입
+        const newSeriesPosts = [...remainingPosts];
+        newSeriesPosts.splice(dropIndex, 0, ...postsToMoveObjects);
+
+        setSeriesPosts(newSeriesPosts);
+      } else {
+        // 전체 게시글에서 시리즈로 이동
+        const postsToMoveObjects = allPosts.filter((post) => postsToMove.includes(post.articleId));
+        if (postsToMoveObjects.length > 0) {
+          setAllPosts(allPosts.filter((post) => !postsToMove.includes(post.articleId)));
+
+          // 드롭 위치에 게시글 삽입
+          const dropIndex = getDropIndexInSeries(e);
+          const newSeriesPosts = [...seriesPosts];
+          newSeriesPosts.splice(dropIndex, 0, ...postsToMoveObjects);
+          setSeriesPosts(newSeriesPosts);
+        }
       }
-      // 시리즈에서 전체 게시글로 이동
     } else if (targetContainer === 'all') {
-      // 1. 이동할 게시글들을 시리즈 목록에서 찾기
+      // 시리즈에서 전체 게시글로 이동
       const postsToMoveObjects = seriesPosts.filter((post) => postsToMove.includes(post.articleId));
       if (postsToMoveObjects.length > 0) {
-        // 2. 시리즈 목록에서 이동할 게시글들 제거
         setSeriesPosts(seriesPosts.filter((post) => !postsToMove.includes(post.articleId)));
-        // 3. 전체 게시글 목록에 이동할 게시글들 추가
         setAllPosts([...allPosts, ...postsToMoveObjects]);
       }
     }
@@ -206,6 +267,7 @@ export default function AddSeriesPage() {
     setSelectedPostIds([]);
     setDraggedPostId(null);
     setDragOverContainer(null);
+    setDropIndicatorIndex(null);
   };
 
   // 드래그 시작 핸들러
@@ -222,6 +284,7 @@ export default function AddSeriesPage() {
   const handleDragEnd = () => {
     setDraggedPostId(null);
     setDragOverContainer(null);
+    setDropIndicatorIndex(null);
   };
 
   const handleCancel = () => {
@@ -247,8 +310,6 @@ export default function AddSeriesPage() {
         banner: bannerBase64,
         seriesArticleList,
       };
-
-      console.log(requestData);
 
       const response = await fetch(`${BASE_URL}/series`, {
         method: 'POST',
@@ -459,33 +520,48 @@ export default function AddSeriesPage() {
                   </div>
                 </div>
               ) : (
-                seriesPosts.map((post) => (
-                  <div
-                    key={post.articleId}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, post.articleId)}
-                    onDragEnd={handleDragEnd}
-                    onClick={(e) => handlePostClick(e, post, 'series')}
-                    className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
-                      selectedPostIds.includes(post.articleId) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
-                    } ${
-                      draggedPostId && selectedPostIds.includes(post.articleId)
-                        ? 'scale-95 opacity-30'
-                        : ''
-                    }`}
-                  >
-                    <div className='flex items-center gap-2'>
-                      <Image
-                        src='/icons/drag.svg'
-                        alt='드래그'
-                        width={16}
-                        height={16}
-                        className='size-6'
-                      />
-                      <span className='text-sm text-black'>
-                        {post.articleTitle || `게시글 ${post.articleId}`}
-                      </span>
+                seriesPosts.map((post, index) => (
+                  <div key={post.articleId}>
+                    {/* 각 게시글 위쪽에 표시되는 파란색 라인 드롭 인디케이터 */}
+                    {dropIndicatorIndex === index && (
+                      <div className='mx-4 h-0.5 rounded-full bg-blue-500' />
+                    )}
+                    <div
+                      ref={(el) => {
+                        seriesPostRefs.current[index] = el;
+                      }}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, post.articleId)}
+                      onDragEnd={handleDragEnd}
+                      onClick={(e) => handlePostClick(e, post, 'series')}
+                      className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
+                        selectedPostIds.includes(post.articleId)
+                          ? 'bg-[#F2F2F2]'
+                          : 'hover:bg-gray-50'
+                      } ${
+                        draggedPostId && selectedPostIds.includes(post.articleId)
+                          ? 'scale-95 opacity-30'
+                          : ''
+                      }`}
+                    >
+                      <div className='flex items-center gap-2'>
+                        <Image
+                          src='/icons/drag.svg'
+                          alt='드래그'
+                          width={16}
+                          height={16}
+                          className='size-6'
+                        />
+                        <span className='text-sm text-black'>
+                          {post.articleTitle || `게시글 ${post.articleId}`}
+                        </span>
+                      </div>
                     </div>
+                    {/* 마지막 게시글 아래쪽에 표시되는 파란색 라인 드롭 인디케이터 */}
+                    {dropIndicatorIndex === seriesPosts.length &&
+                      index === seriesPosts.length - 1 && (
+                        <div className='mx-4 h-0.5 rounded-full bg-blue-500' />
+                      )}
                   </div>
                 ))
               )}
