@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -43,6 +43,8 @@ export default function SeriesPage() {
   const [seriesToDelete, setSeriesToDelete] = useState<string | null>(null);
 
   const router = useRouter();
+  const params = useParams();
+  const blogUrl = params.blogUrl as string;
 
   useEffect(() => {
     const fetchSeries = async () => {
@@ -95,7 +97,7 @@ export default function SeriesPage() {
     setSeriesToDelete(null);
   };
 
-  const handleAddSeries = () => router.push('/admin/series/add');
+  const handleAddSeries = () => router.push(`/${blogUrl}/series/add`);
 
   return (
     <div className='mx-auto w-full max-w-5xl'>
@@ -208,7 +210,7 @@ export default function SeriesPage() {
                           className='h-8 justify-start gap-1 px-2 text-sm font-normal text-black hover:bg-gray-50'
                           onClick={() => {
                             setOpenPopoverId(null);
-                            router.push(`/admin/series/edit/${series.id}`);
+                            router.push(`/${blogUrl}/series/edit/${series.id}`);
                           }}
                         >
                           <Image src='/icons/edit.svg' alt='편집' width={16} height={16} />
