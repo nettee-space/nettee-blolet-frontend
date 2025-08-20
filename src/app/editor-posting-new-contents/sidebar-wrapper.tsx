@@ -1,3 +1,4 @@
+'use client';
 import SideBarAdmin from './sidebar-admin';
 import SideBarDraft from './sidebar-draft';
 import SideBarFunction from './sidebar-function';

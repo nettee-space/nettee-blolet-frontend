@@ -22,17 +22,17 @@ const editorContainerVariants = cva(
           'flex flex-wrap justify-between gap-1 px-1 py-0.5 text-sm',
           'rounded-md border-[1.5px] border-transparent bg-transparent',
           'has-[[data-slate-editor]:focus]:border-brand/50 has-[[data-slate-editor]:focus]:ring-2 has-[[data-slate-editor]:focus]:ring-brand/30',
-          'has-aria-disabled:border-input has-aria-disabled:bg-muted'
+          'has-aria-disabled:border-input has-aria-disabled:bg-muted',
         ),
         default: 'h-full',
         demo: 'h-[650px]',
         select: cn(
           'group rounded-md border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-          'has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent has-data-readonly:focus-within:[box-shadow:none]'
+          'has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent has-data-readonly:focus-within:[box-shadow:none]',
         ),
       },
     },
-  }
+  },
 );
 
 export function EditorContainer({
@@ -45,10 +45,9 @@ export function EditorContainer({
       className={cn(
         'ignore-click-outside/toolbar',
         editorContainerVariants({ variant }),
-        className
+        className,
       )}
       {...props}
-      
     />
   );
 }
@@ -59,7 +58,7 @@ const editorVariants = cva(
     'relative w-full cursor-text overflow-x-hidden break-words whitespace-pre-wrap select-text',
     'rounded-md ring-offset-background focus-visible:outline-none',
     'placeholder:text-muted-foreground/80 **:data-slate-placeholder:!top-1/2 **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!',
-    '[&_strong]:font-bold'
+    '[&_strong]:font-bold',
   ),
   {
     defaultVariants: {
@@ -74,22 +73,19 @@ const editorVariants = cva(
       },
       variant: {
         comment: cn('rounded-none border-none bg-transparent text-sm'),
-        default:
-          'size-full py-15 px-[90px] text-base',
+        default: 'size-full py-15 text-base',
         fullWidth: 'size-full px-16 pt-4 pb-72 text-base sm:px-24',
         none: '',
         select: 'px-3 py-2 text-base data-readonly:w-fit',
       },
     },
-  }
+  },
 );
 
-export type EditorProps = PlateContentProps &
-  VariantProps<typeof editorVariants>;
+export type EditorProps = PlateContentProps & VariantProps<typeof editorVariants>;
 
 export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
   ({ className, disabled, focused, variant, ...props }, ref) => {
-
     return (
       <PlateContent
         ref={ref}
@@ -99,14 +95,14 @@ export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
             focused,
             variant,
           }),
-          className
+          className,
         )}
         disabled={disabled}
         disableDefaultStyles
         {...props}
       />
     );
-  }
+  },
 );
 
 Editor.displayName = 'Editor';
@@ -116,12 +112,7 @@ export function EditorView({
   variant,
   ...props
 }: PlateViewProps & VariantProps<typeof editorVariants>) {
-  return (
-    <PlateView
-      {...props}
-      className={cn(editorVariants({ variant }), className)}
-    />
-  );
+  return <PlateView {...props} className={cn(editorVariants({ variant }), className)} />;
 }
 
 EditorView.displayName = 'EditorView';

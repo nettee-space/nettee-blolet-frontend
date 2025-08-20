@@ -1,7 +1,7 @@
 'use client';
 
 import type { AutoformatRule } from '@platejs/autoformat';
-
+import { insertLink } from '@platejs/link';
 import {
   autoformatArrow,
   autoformatLegal,
@@ -13,7 +13,7 @@ import {
 } from '@platejs/autoformat';
 import { insertEmptyCodeBlock } from '@platejs/code-block';
 import { toggleList } from '@platejs/list';
-import { KEYS } from 'platejs';
+import { KEYS, RangeApi } from 'platejs';
 
 const autoformatMarks: AutoformatRule[] = [
   {
@@ -85,6 +85,35 @@ const autoformatMarks: AutoformatRule[] = [
     match: '`',
     mode: 'mark',
     type: KEYS.code,
+  },
+];
+
+export const autoformatLinks: AutoformatRule[] = [
+  {
+    mode: 'text',
+    match: [')'], // ')' 입력 시 format 실행
+    format: (editor) => {
+      const block = editor.api.block();
+      const text = block?.[0]?.children[0]?.text as string;
+
+      // [텍스트](URL) 패턴 감지
+      const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)/);
+
+      if (!block?.[0]?.children[0]?.text.length) {
+        console.log('변경 안됨');
+        return;
+      }
+
+      if (linkMatch && linkMatch.length >= 3) {
+        editor.api.block()[0].children[0].text = '';
+        insertLink(editor, {
+          url: linkMatch?.[2] || '',
+          text: linkMatch?.[1] || '',
+        });
+      } else {
+        editor.api.block()[0].children[0].text = text + ')';
+      }
+    },
   },
 ];
 
@@ -179,7 +208,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['[] '],
+    match: ['[]'],
     mode: 'block',
     type: 'list',
     format: (editor) => {
@@ -193,7 +222,7 @@ const autoformatLists: AutoformatRule[] = [
     },
   },
   {
-    match: ['[x] '],
+    match: ['[x]'],
     mode: 'block',
     type: 'list',
     format: (editor) => {
@@ -222,6 +251,7 @@ export const AutoformatKit = [
         ...autoformatArrow,
         ...autoformatMath,
         ...autoformatLists,
+        ...autoformatLinks,
       ].map(
         (rule): AutoformatRule => ({
           ...rule,
@@ -229,7 +259,7 @@ export const AutoformatKit = [
             !editor.api.some({
               match: { type: editor.getType(KEYS.codeBlock) },
             }),
-        })
+        }),
       ),
     },
   }),

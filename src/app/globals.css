@@ -136,6 +136,9 @@
 }
 body {
   font-family: 'Pretendard', sans-serif;
+  font-size: 18px;
+  line-height: 32px;
+  letter-spacing: -3%;
 }
 .placeholder-multiline::before {
   content: attr(placeholder);
