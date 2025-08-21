@@ -1,9 +1,9 @@
 ---
-name: "버그 이슈 템플릿"
-about: "발생된 버그에 관한 이슈 템플릿입니다."
-title: "🐞"
-labels: ""
-assignees: ""
+name: '버그 이슈 템플릿'
+about: '발생된 버그에 관한 이슈 템플릿입니다.'
+title: '🐞'
+labels: ''
+assignees: ''
 ---
 
 ## 🐞 버그 설명

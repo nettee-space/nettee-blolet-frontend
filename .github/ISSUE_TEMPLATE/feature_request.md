@@ -1,9 +1,9 @@
 ---
-name: "기능 이슈 템플릿"
+name: '기능 이슈 템플릿'
 about: 신규 기능에 대한 이슈 템플릿입니다.
-title: "✨"
-labels: ""
-assignees: ""
+title: '✨'
+labels: ''
+assignees: ''
 ---
 
 ## 📌 어떤 기능인가요?
