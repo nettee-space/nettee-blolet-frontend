@@ -9,14 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.3.23",
-    "@ai-sdk/provider": "^1.1.3",
-    "@ai-sdk/provider-utils": "^2.2.8",
-    "@ai-sdk/react": "^1.2.12",
     "@ariakit/react": "^0.4.17",
     "@emoji-mart/data": "1.2.1",
     "@faker-js/faker": "^9.9.0",
-    "@platejs/ai": "^49.2.1",
     "@platejs/autoformat": "^49.0.0",
     "@platejs/basic-nodes": "^49.0.0",
     "@platejs/basic-styles": "^49.0.0",
@@ -30,7 +25,6 @@
     "@platejs/dnd": "^49.2.2",
     "@platejs/docx": "^49.0.0",
     "@platejs/emoji": "^49.0.0",
-    "@platejs/excalidraw": "^49.0.0",
     "@platejs/floating": "^49.0.0",
     "@platejs/indent": "^49.0.0",
     "@platejs/juice": "^49.0.0",
@@ -61,14 +55,11 @@
     "@radix-ui/react-toolbar": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@udecode/cn": "^49.0.15",
-    "@uploadthing/react": "7.3.1",
-    "ai": "^4.3.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "html2canvas-pro": "^1.5.11",
-    "lodash": "^4.17.21",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.525.0",
     "next": "15.4.1",
@@ -89,7 +80,6 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
-    "uploadthing": "7.7.2",
     "use-file-picker": "2.1.2",
     "zod": "^4.0.14",
     "zustand": "^5.0.8"
@@ -109,6 +99,5 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+  }
 }
