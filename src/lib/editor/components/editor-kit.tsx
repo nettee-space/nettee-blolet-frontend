@@ -3,27 +3,27 @@
 import { type Value, TrailingBlockPlugin } from 'platejs';
 import { type TPlateEditor, useEditorRef } from 'platejs/react';
 
-import { AlignKit } from '@/components/align-kit';
-import { AutoformatKit } from '@/components/autoformat-kit';
-import { BasicBlocksKit } from '@/components/basic-blocks-kit';
-import { BasicMarksKit } from '@/components/basic-marks-kit';
-import { BlockMenuKit } from '@/components/block-menu-kit';
-import { BlockPlaceholderKit } from '@/components/block-placeholder-kit';
-import { CalloutKit } from '@/components/callout-kit';
-import { CodeBlockKit } from '@/components/code-block-kit';
-import { CursorOverlayKit } from '@/components/cursor-overlay-kit';
-import { DndKit } from '@/components/dnd-kit';
-import { DocxKit } from '@/components/docx-kit';
-import { EmojiKit } from '@/components/emoji-kit';
-import { FloatingToolbarKit } from '@/components/floating-toolbar-kit';
-import { FontKit } from '@/components/font-kit';
-import { LinkKit } from '@/components/link-kit';
-import { ListKit } from '@/components/list-kit';
-import { MarkdownKit } from '@/components/markdown-kit';
-import { MediaKit } from '@/components/media-kit';
-import { SlashKit } from '@/components/slash-kit';
-import { TableKit } from '@/components/table-kit';
-import { ToggleKit } from '@/components/toggle-kit';
+import { AlignKit } from '@/lib/editor/components/align-kit';
+import { AutoformatKit } from '@/lib/editor/components/autoformat-kit';
+import { BasicBlocksKit } from '@/lib/editor/components/basic-blocks-kit';
+import { BasicMarksKit } from '@/lib/editor/components/basic-marks-kit';
+import { BlockMenuKit } from '@/lib/editor/components/block-menu-kit';
+// import { BlockPlaceholderKit } from '@/lib/editor/components/block-placeholder-kit';
+import { CalloutKit } from '@/lib/editor/components/callout-kit';
+import { CodeBlockKit } from '@/lib/editor/components/code-block-kit';
+import { CursorOverlayKit } from '@/lib/editor/components/cursor-overlay-kit';
+import { DndKit } from '@/lib/editor/components/dnd-kit';
+import { DocxKit } from '@/lib/editor/components/docx-kit';
+import { EmojiKit } from '@/lib/editor/components/emoji-kit';
+import { FloatingToolbarKit } from '@/lib/editor/components/floating-toolbar-kit';
+import { FontKit } from '@/lib/editor/components/font-kit';
+import { LinkKit } from '@/lib/editor/components/link-kit';
+import { ListKit } from '@/lib/editor/components/list-kit';
+import { MarkdownKit } from '@/lib/editor/components/markdown-kit';
+import { MediaKit } from '@/lib/editor/components/media-kit';
+import { SlashKit } from '@/lib/editor/components/slash-kit';
+import { TableKit } from '@/lib/editor/components/table-kit';
+import { ToggleKit } from '@/lib/editor/components/toggle-kit';
 
 export const EditorKit = [
   // Elements
@@ -50,12 +50,12 @@ export const EditorKit = [
   ...DndKit,
   ...EmojiKit,
   TrailingBlockPlugin,
-
   // Parsers
   ...DocxKit,
   ...MarkdownKit,
   ...FloatingToolbarKit,
-  ...BlockPlaceholderKit,
+  ...BlockMenuKit,
+  // ...BlockPlaceholderKit,
 ];
 
 export type MyEditor = TPlateEditor<Value, (typeof EditorKit)[number]>;

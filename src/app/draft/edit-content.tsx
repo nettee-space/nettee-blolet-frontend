@@ -1,14 +1,13 @@
 'use client';
 
-import * as React from 'react';
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 interface EditContentProps {
-  handleBannerUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBannerUpload: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function EditContent({ handleBannerUpload }: EditContentProps) {
-  const [tags, setTags] = React.useState(['프론트엔드', 'React', 'Javascript']);
-  const handleMaxLength = (e: React.FormEvent<HTMLInputElement>, maxLength: number) => {
+  const [tags, setTags] = useState(['프론트엔드', 'React', 'Javascript']);
+  const handleMaxLength = (e: FormEvent<HTMLInputElement>, maxLength: number) => {
     const inputElement = e.target as HTMLInputElement;
     const { value } = inputElement;
     if (value.length > maxLength) {

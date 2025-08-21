@@ -16,17 +16,11 @@ import { PlateElement, useEditorMounted, withHOC } from 'platejs/react';
 import { cn } from '@/lib/utils';
 
 import { Caption, CaptionTextarea } from './caption';
-import {
-  mediaResizeHandleVariants,
-  Resizable,
-  ResizeHandle,
-} from './resize-handle';
+import { mediaResizeHandleVariants, Resizable, ResizeHandle } from './resize-handle';
 
 export const VideoElement = withHOC(
   ResizableProvider,
-  function VideoElement(
-    props: PlateElementProps<TVideoElement & TResizableProps>
-  ) {
+  function VideoElement(props: PlateElementProps<TVideoElement & TResizableProps>) {
     const {
       align = 'center',
       embed,
@@ -48,8 +42,8 @@ export const VideoElement = withHOC(
     });
 
     return (
-      <PlateElement className="py-2.5" {...props}>
-        <figure className="relative m-0 cursor-default" contentEditable={false}>
+      <PlateElement className='py-2.5' {...props}>
+        <figure className='relative m-0 cursor-default' contentEditable={false}>
           <Resizable
             className={cn(isDragging && 'opacity-50')}
             align={align}
@@ -60,7 +54,7 @@ export const VideoElement = withHOC(
               readOnly,
             }}
           >
-            <div className="group/media">
+            <div className='group/media'>
               <ResizeHandle
                 className={mediaResizeHandleVariants({ direction: 'left' })}
                 options={{ direction: 'left' }}
@@ -75,7 +69,7 @@ export const VideoElement = withHOC(
                 <div ref={handleRef}>
                   <LiteYouTubeEmbed
                     id={embed!.id!}
-                    title="youtube"
+                    title='youtube'
                     wrapperClass={cn(
                       'aspect-video rounded-sm',
                       'relative block cursor-pointer bg-black bg-cover bg-center [contain:content]',
@@ -90,7 +84,7 @@ export const VideoElement = withHOC(
                       '[&_>_.lty-playbtn]:before:absolute [&_>_.lty-playbtn]:before:top-1/2 [&_>_.lty-playbtn]:before:left-1/2 [&_>_.lty-playbtn]:before:[transform:translate3d(-50%,-50%,0)]',
                       '[&.lyt-activated]:cursor-[unset]',
                       '[&.lyt-activated]:before:pointer-events-none [&.lyt-activated]:before:opacity-0',
-                      '[&.lyt-activated_>_.lty-playbtn]:pointer-events-none [&.lyt-activated_>_.lty-playbtn]:opacity-0!'
+                      '[&.lyt-activated_>_.lty-playbtn]:pointer-events-none [&.lyt-activated_>_.lty-playbtn]:opacity-0!',
                     )}
                   />
                 </div>
@@ -99,9 +93,9 @@ export const VideoElement = withHOC(
               {isUpload && isEditorMounted && (
                 <div ref={handleRef}>
                   <ReactPlayer
-                    height="100%"
-                    url={unsafeUrl}
-                    width="100%"
+                    height='100%'
+                    // url={unsafeUrl}
+                    width='100%'
                     controls
                   />
                 </div>
@@ -110,14 +104,11 @@ export const VideoElement = withHOC(
           </Resizable>
 
           <Caption style={{ width }} align={align}>
-            <CaptionTextarea
-              readOnly={readOnly}
-              placeholder="Write a caption..."
-            />
+            <CaptionTextarea readOnly={readOnly} placeholder='Write a caption...' />
           </Caption>
         </figure>
         {props.children}
       </PlateElement>
     );
-  }
+  },
 );

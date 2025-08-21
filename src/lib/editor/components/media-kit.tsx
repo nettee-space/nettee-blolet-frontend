@@ -11,14 +11,14 @@ import {
 } from '@platejs/media/react';
 import { KEYS } from 'platejs';
 
-import { AudioElement } from '@/components/ui/media-audio-node';
-import { MediaEmbedElement } from '@/components/ui/media-embed-node';
-import { FileElement } from '@/components/ui/media-file-node';
-import { ImageElement } from '@/components/ui/media-image-node';
-import { PlaceholderElement } from '@/components/ui/media-placeholder-node';
-import { MediaPreviewDialog } from '@/components/ui/media-preview-dialog';
-import { MediaUploadToast } from '@/components/ui/media-upload-toast';
-import { VideoElement } from '@/components/ui/media-video-node';
+import { AudioElement } from '@/lib/editor/components/ui/media-audio-node';
+import { MediaEmbedElement } from '@/lib/editor/components/ui/media-embed-node';
+import { FileElement } from '@/lib/editor/components/ui/media-file-node';
+import { ImageElement } from '@/lib/editor/components/ui/media-image-node';
+import { PlaceholderElement } from '@/lib/editor/components/ui/media-placeholder-node';
+import { MediaPreviewDialog } from '@/lib/editor/components/ui/media-preview-dialog';
+import { MediaUploadToast } from '@/lib/editor/components/ui/media-upload-toast';
+import { VideoElement } from '@/lib/editor/components/ui/media-video-node';
 
 export const MediaKit = [
   ImagePlugin.configure({

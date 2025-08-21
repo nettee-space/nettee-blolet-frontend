@@ -87,35 +87,35 @@ const autoformatMarks: AutoformatRule[] = [
     type: KEYS.code,
   },
 ];
+// todo 링크 마크다운 커스텀
+// export const autoformatLinks: AutoformatRule[] = [
+//   {
+//     mode: 'text',
+//     match: [')'], // ')' 입력 시 format 실행
+//     format: (editor) => {
+//       const block = editor.api.block();
+//       const text = block?.[0]?.children[0]?.text as string;
 
-export const autoformatLinks: AutoformatRule[] = [
-  {
-    mode: 'text',
-    match: [')'], // ')' 입력 시 format 실행
-    format: (editor) => {
-      const block = editor.api.block();
-      const text = block?.[0]?.children[0]?.text as string;
+//       // [텍스트](URL) 패턴 감지
+//       const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)/);
 
-      // [텍스트](URL) 패턴 감지
-      const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)/);
+//       if (!block?.[0]?.children[0]?.text.length) {
+//         console.log('변경 안됨');
+//         return;
+//       }
 
-      if (!block?.[0]?.children[0]?.text.length) {
-        console.log('변경 안됨');
-        return;
-      }
-
-      if (linkMatch && linkMatch.length >= 3) {
-        editor.api.block()[0].children[0].text = '';
-        insertLink(editor, {
-          url: linkMatch?.[2] || '',
-          text: linkMatch?.[1] || '',
-        });
-      } else {
-        editor.api.block()[0].children[0].text = text + ')';
-      }
-    },
-  },
-];
+//       if (linkMatch && linkMatch.length >= 3) {
+//         editor.api.block()[0].children[0].text = '';
+//         insertLink(editor, {
+//           url: linkMatch?.[2] || '',
+//           text: linkMatch?.[1] || '',
+//         });
+//       } else {
+//         editor.api.block()[0].children[0].text = text + ')';
+//       }
+//     },
+//   },
+// ];
 
 const autoformatBlocks: AutoformatRule[] = [
   {
@@ -251,7 +251,7 @@ export const AutoformatKit = [
         ...autoformatArrow,
         ...autoformatMath,
         ...autoformatLists,
-        ...autoformatLinks,
+        // ...autoformatLinks,
       ].map(
         (rule): AutoformatRule => ({
           ...rule,

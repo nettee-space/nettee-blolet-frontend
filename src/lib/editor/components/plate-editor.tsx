@@ -3,13 +3,12 @@ import { Plate, usePlateEditor } from 'platejs/react';
 
 import * as React from 'react';
 
-import { EditorKit } from '@/components/editor-kit';
-import { Editor, EditorContainer } from '@/components/ui/editor';
+import { EditorKit } from './editor-kit';
+import { Editor, EditorContainer } from './ui/editor';
 
 export function PlateEditor() {
   const editor = usePlateEditor({
     plugins: EditorKit,
-    value,
   });
   return (
     <Plate editor={editor}>
@@ -21,5 +20,3 @@ export function PlateEditor() {
     </Plate>
   );
 }
-
-const value = [];

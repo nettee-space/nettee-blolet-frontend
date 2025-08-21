@@ -5,8 +5,6 @@ import React from 'react';
 import type { DropdownMenuItemProps, DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 import { useComposedRef } from '@udecode/cn';
-// @ts-expect-error: no types for lodash/debounce.js
-import debounce from 'lodash/debounce.js';
 import { EraserIcon, PlusIcon } from 'lucide-react';
 import { useEditorRef, useEditorSelector } from 'platejs/react';
 
@@ -218,9 +216,8 @@ function ColorCustom({
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateCustomColorDebounced = React.useCallback(debounce(updateCustomColor, 100), [
-    updateCustomColor,
-  ]);
+  // todo updatecustom 디바운스 처리 필요
+  const updateCustomColorDebounced = React.useCallback(updateCustomColor, [updateCustomColor]);
 
   return (
     <div className={cn('relative flex flex-col gap-4', className)} {...props}>

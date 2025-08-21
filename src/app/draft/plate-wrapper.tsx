@@ -1,8 +1,6 @@
 'use client';
-import * as React from 'react';
 
-import { PlateEditor } from '@/components/plate-editor';
-
+import { PlateEditor } from '@/lib/editor/components/plate-editor';
 export default function PlateWrapper() {
   return (
     <div className='h-full w-full'>

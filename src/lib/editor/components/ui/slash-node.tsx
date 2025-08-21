@@ -3,8 +3,6 @@
 import * as React from 'react';
 
 import type { PlateEditor, PlateElementProps } from 'platejs/react';
-
-import { AIChatPlugin } from '@platejs/ai/react';
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -27,7 +25,7 @@ import {
 import { type TComboboxInputElement, KEYS } from 'platejs';
 import { PlateElement } from 'platejs/react';
 
-import { insertBlock, insertInlineElement } from '@/components/transforms';
+import { insertBlock, insertInlineElement } from '@/lib/editor/components/transforms';
 
 import {
   InlineCombobox,
@@ -179,7 +177,6 @@ const groups: Group[] = [
         insertLink(editor, {
           url: value,
         });
-        insert;
       },
     })),
   },

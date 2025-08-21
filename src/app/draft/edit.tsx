@@ -1,10 +1,10 @@
 'use client';
-import * as React from 'react';
+import { useState } from 'react';
 import EditWrapper from './edit-wrapper';
 import SideBarWrapper from './sidebar-wrapper';
 
 export default function Edit() {
-  const [sidebar, setSidebar] = React.useState(true);
+  const [sidebar, setSidebar] = useState(true);
   const openSidebar = () => {
     setSidebar(true);
   };

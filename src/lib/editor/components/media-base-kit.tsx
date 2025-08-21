@@ -9,10 +9,10 @@ import {
 } from '@platejs/media';
 import { KEYS } from 'platejs';
 
-import { AudioElementStatic } from '@/components/ui/media-audio-node-static';
-import { FileElementStatic } from '@/components/ui/media-file-node-static';
-import { ImageElementStatic } from '@/components/ui/media-image-node-static';
-import { VideoElementStatic } from '@/components/ui/media-video-node-static';
+import { AudioElementStatic } from '@/lib/editor/components/ui/media-audio-node-static';
+import { FileElementStatic } from '@/lib/editor/components/ui/media-file-node-static';
+import { ImageElementStatic } from '@/lib/editor/components/ui/media-image-node-static';
+import { VideoElementStatic } from '@/lib/editor/components/ui/media-video-node-static';
 
 export const BaseMediaKit = [
   BaseImagePlugin.withComponent(ImageElementStatic),
