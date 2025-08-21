@@ -3,9 +3,7 @@ import { BaseBasicBlocksKit } from './basic-blocks-base-kit';
 import { BaseBasicMarksKit } from './basic-marks-base-kit';
 import { BaseCalloutKit } from './callout-base-kit';
 import { BaseCodeBlockKit } from './code-block-base-kit';
-import { BaseColumnKit } from './column-base-kit';
 import { BaseCommentKit } from './comment-base-kit';
-import { BaseDateKit } from './date-base-kit';
 import { BaseFontKit } from './font-base-kit';
 import { BaseLineHeightKit } from './line-height-base-kit';
 import { BaseLinkKit } from './link-base-kit';
@@ -27,9 +25,7 @@ export const BaseEditorKit = [
   ...BaseTocKit,
   ...BaseMediaKit,
   ...BaseCalloutKit,
-  ...BaseColumnKit,
   ...BaseMathKit,
-  ...BaseDateKit,
   ...BaseLinkKit,
   ...BaseMentionKit,
   ...BaseBasicMarksKit,
