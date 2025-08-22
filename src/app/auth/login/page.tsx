@@ -1,9 +1,8 @@
 'use client';
-
 import { useState } from 'react';
 
-import BasicLoginModal from '@/app/features/auth/login/components/BasicLoginModal/basic-login-modal';
-import SeasonLoginModal from '@/app/features/auth/login/components/SeasonLoginModal/season-login-modal';
+import BasicLoginModal from '@/features/auth/login/components/BasicLoginModal/basic-login-modal';
+import SeasonLoginModal from '@/features/auth/login/components/SeasonLoginModal/season-login-modal';
 
 const LoginPage = () => {
   const [showSeasonLoginModal, setShowSeasonLoginModal] = useState(false);
