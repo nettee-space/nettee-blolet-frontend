@@ -1,4 +1,4 @@
-import SeasonLogin from './Seasonlogin';
+import SeasonLogin from './season-login';
 
 interface LoginModalProps {
   isOpen: boolean;

@@ -13,7 +13,7 @@ const SeasonLogin = () => {
         {isLoginMode ? (
           <div>
             <div className='flex items-start justify-center'>
-              <p className='-mt-8 text-xl font-bold'>로그인</p>
+              <p className='-mt-8 text-2xl font-bold text-[#0E0E0F]'>로그인</p>
             </div>
             <div className='mt-8 flex flex-col gap-4'>
               <input

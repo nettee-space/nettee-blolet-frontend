@@ -1,4 +1,4 @@
-import BasicLogin from './Basiclogin';
+import BasicLogin from './basic-login';
 
 interface LoginModalProps {
   isOpen: boolean;
