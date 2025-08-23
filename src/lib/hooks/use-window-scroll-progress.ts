@@ -22,7 +22,5 @@ export function useWindowScrollProgress(): number {
   // useEventListener로 스크롤 이벤트 관리
   useEventListener('scroll', throttledScrollHandler);
 
-  console.log({ progress });
-
   return progress;
 }
