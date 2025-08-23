@@ -7,7 +7,7 @@ import {
   useImagePreviewValue,
 } from '@platejs/media/react';
 import { cva } from 'class-variance-authority';
-import { Link, Trash2Icon } from 'lucide-react';
+import { Link } from 'lucide-react';
 import type { WithRequiredKey } from 'platejs';
 import {
   useEditorRef,
@@ -22,14 +22,6 @@ import {
 import Image from 'next/image';
 import * as React from 'react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 
 import { CaptionButton } from './caption';

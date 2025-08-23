@@ -1,9 +1,6 @@
 'use client';
 
-import * as React from 'react';
-
 import type { Emoji } from '@emoji-mart/data';
-
 import {
   type EmojiCategoryList,
   type EmojiIconList,
@@ -30,10 +27,12 @@ import {
   XIcon,
 } from 'lucide-react';
 
+import * as React from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
 import { ToolbarButton } from '@/lib/editor/components/ui/toolbar';
+import { cn } from '@/lib/utils';
 
 export function EmojiToolbarButton({
   options,
@@ -234,6 +233,7 @@ function EmojiPickerContent({
   const getRowWidth = settings.perLine.value * settings.buttonSize.value;
 
   const isCategoryVisible = React.useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (categoryId: any) => {
       return visibleCategories.has(categoryId) ? visibleCategories.get(categoryId) : false;
     },

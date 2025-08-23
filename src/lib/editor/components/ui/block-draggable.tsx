@@ -1,7 +1,5 @@
 'use client';
 
-import * as React from 'react';
-
 import { useDraggable, useDropLine } from '@platejs/dnd';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import { GripVertical } from 'lucide-react';
@@ -17,6 +15,8 @@ import {
 } from 'platejs/react';
 import { useSelected } from 'platejs/react';
 
+import * as React from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,7 @@ const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td];
 
 export const BlockDraggable: RenderNodeWrapper = (props) => {
   const { editor, element, path } = props;
+
   const enabled = React.useMemo(() => {
     if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       return true;
@@ -59,12 +60,12 @@ export const BlockDraggable: RenderNodeWrapper = (props) => {
 
   if (!enabled) return;
 
+  // eslint-disable-next-line react/display-name
   return (props) => <Draggable {...props} />;
 };
 
 export function Draggable(props: PlateElementProps) {
   const { children, editor, element, path } = props;
-
   const blockSelectionApi = editor.getApi(BlockSelectionPlugin).blockSelection;
   const { isDragging, previewRef, handleRef } = useDraggable({
     element,
@@ -172,6 +173,7 @@ function Gutter({ children, className, ...props }: React.ComponentProps<'div'>) 
 const DragHandle = React.memo(function DragHandle() {
   const editor = useEditorRef();
   const element = useElement();
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>

@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+
 export default function SideBarDraft() {
   return (
     <div className='pb flex flex-col gap-8 pb-6 text-[#4D4D4D]'>

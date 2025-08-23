@@ -1,8 +1,6 @@
 'use client';
 
-import * as React from 'react';
-
-import type { PlateEditor, PlateElementProps } from 'platejs/react';
+import { insertLink } from '@platejs/link';
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -23,7 +21,10 @@ import {
   TableOfContentsIcon,
 } from 'lucide-react';
 import { type TComboboxInputElement, KEYS } from 'platejs';
+import type { PlateEditor, PlateElementProps } from 'platejs/react';
 import { PlateElement } from 'platejs/react';
+
+import * as React from 'react';
 
 import { insertBlock, insertInlineElement } from '@/lib/editor/components/transforms';
 
@@ -32,11 +33,9 @@ import {
   InlineComboboxContent,
   InlineComboboxEmpty,
   InlineComboboxGroup,
-  InlineComboboxGroupLabel,
   InlineComboboxInput,
   InlineComboboxItem,
 } from './inline-combobox';
-import { insertLink } from '@platejs/link';
 
 type Group = {
   group: string;

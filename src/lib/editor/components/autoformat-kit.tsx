@@ -1,7 +1,6 @@
 'use client';
 
 import type { AutoformatRule } from '@platejs/autoformat';
-import { insertLink } from '@platejs/link';
 import {
   autoformatArrow,
   autoformatLegal,
@@ -12,8 +11,9 @@ import {
   autoformatSmartQuotes,
 } from '@platejs/autoformat';
 import { insertEmptyCodeBlock } from '@platejs/code-block';
+// import { insertLink } from '@platejs/link';
 import { toggleList } from '@platejs/list';
-import { KEYS, RangeApi } from 'platejs';
+import { KEYS } from 'platejs';
 
 const autoformatMarks: AutoformatRule[] = [
   {

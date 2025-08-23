@@ -19,6 +19,7 @@ export const BlockSelectionKit = [
       belowRootNodes: (props) => {
         if (!props.attributes.className?.includes('slate-selectable')) return null;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <BlockSelection {...(props as any)} />;
       },
     },

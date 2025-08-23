@@ -1,7 +1,5 @@
 'use client';
 
-import * as React from 'react';
-
 import {
   BLOCK_CONTEXT_MENU_ID,
   BlockMenuPlugin,
@@ -9,6 +7,8 @@ import {
 } from '@platejs/selection/react';
 import { KEYS } from 'platejs';
 import { useEditorPlugin, usePlateState } from 'platejs/react';
+
+import * as React from 'react';
 
 import {
   ContextMenu,
@@ -22,11 +22,8 @@ import {
 } from '@/components/ui/context-menu';
 import { useIsTouchDevice } from '@/hooks/use-is-touch-device';
 
-type Value = 'askAI' | null;
-
 export function BlockContextMenu({ children }: { children: React.ReactNode }) {
   const { api, editor } = useEditorPlugin(BlockMenuPlugin);
-  const [value, setValue] = React.useState<Value>(null);
   const isTouch = useIsTouchDevice();
   const [readOnly] = usePlateState('readOnly');
 
@@ -95,18 +92,9 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
         onCloseAutoFocus={(e) => {
           e.preventDefault();
           editor.getApi(BlockSelectionPlugin).blockSelection.focus();
-
-          setValue(null);
         }}
       >
         <ContextMenuGroup>
-          <ContextMenuItem
-            onClick={() => {
-              setValue('askAI');
-            }}
-          >
-            Ask AI
-          </ContextMenuItem>
           <ContextMenuItem
             onClick={() => {
               editor.getTransforms(BlockSelectionPlugin).blockSelection.removeNodes();
@@ -127,7 +115,6 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
             <ContextMenuSubTrigger>Turn into</ContextMenuSubTrigger>
             <ContextMenuSubContent className='w-48'>
               <ContextMenuItem onClick={() => handleTurnInto(KEYS.p)}>Paragraph</ContextMenuItem>
-
               <ContextMenuItem onClick={() => handleTurnInto(KEYS.h1)}>Heading 1</ContextMenuItem>
               <ContextMenuItem onClick={() => handleTurnInto(KEYS.h2)}>Heading 2</ContextMenuItem>
               <ContextMenuItem onClick={() => handleTurnInto(KEYS.h3)}>Heading 3</ContextMenuItem>

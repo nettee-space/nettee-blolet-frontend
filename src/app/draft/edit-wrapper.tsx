@@ -1,9 +1,11 @@
 'use client';
 import { ChangeEvent, useState } from 'react';
+
 import EditContent from './edit-content';
 import EditTop from './edit-top';
 import MainBanner from './main-banner';
 import PlateWrapper from './plate-wrapper';
+
 interface EditWrapperProps {
   open: () => void;
   sidebar?: boolean;
