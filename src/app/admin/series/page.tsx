@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 
 interface Series {
@@ -25,6 +26,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export default function SeriesPage() {
   const [seriesList, setSeriesList] = useState<Series[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -83,7 +85,7 @@ export default function SeriesPage() {
       </div>
 
       <div className='overflow-hidden rounded-lg border border-[#CCCCCC] bg-white text-black'>
-        <div className='grid grid-cols-[40px_1fr_120px_120px_120px_140px_40px] gap-4 border-b border-gray-200 px-4 py-2 text-sm font-medium text-gray-700'>
+        <div className='grid h-12 grid-cols-[40px_1fr_120px_120px_120px_140px_40px] items-center gap-4 border-b border-[#CCCCCC] px-4 text-sm font-medium text-gray-700'>
           <div />
           <div>시리즈명</div>
           <div className='text-center'>게시글 수</div>
@@ -117,7 +119,7 @@ export default function SeriesPage() {
             {seriesList.map((series) => (
               <div
                 key={series.id}
-                className='grid grid-cols-[40px_1fr_120px_120px_120px_140px_40px] gap-4 border-b border-gray-100 px-4 py-3 text-sm transition-colors last:border-b-0 hover:bg-gray-50'
+                className='grid h-12 grid-cols-[40px_1fr_120px_120px_120px_140px_40px] gap-4 border-b border-[#CCCCCC] px-4 text-sm transition-colors last:border-b-0'
               >
                 <div className='flex items-center justify-center'>
                   <Image
@@ -142,13 +144,49 @@ export default function SeriesPage() {
                   {formatDate(series.updatedAt)}
                 </div>
                 <div className='flex items-center justify-center'>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='h-8 w-8 text-gray-400 hover:bg-transparent hover:text-gray-600'
+                  <Popover
+                    open={openPopoverId === series.id}
+                    onOpenChange={(open) => setOpenPopoverId(open ? series.id : null)}
                   >
-                    <Image src='/icons/more.svg' alt='메뉴' width={32} height={32} />
-                  </Button>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='h-8 w-8 text-gray-400 hover:bg-[#F2F2F2]'
+                      >
+                        <Image src='/icons/more.svg' alt='메뉴' width={32} height={32} />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className='w-[120px] px-2 py-3 shadow-[0px_0px_4px_0px_#00000040]'
+                      align='end'
+                    >
+                      <div className='flex flex-col gap-y-1.5'>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='h-8 justify-start gap-1 px-2 text-sm font-normal text-black hover:bg-gray-50'
+                          onClick={() => {
+                            setOpenPopoverId(null);
+                          }}
+                        >
+                          <Image src='/icons/edit.svg' alt='편집' width={16} height={16} />
+                          편집
+                        </Button>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='h-8 justify-start gap-1 px-2 text-sm font-normal text-[#F64646] hover:bg-gray-50 hover:text-[#F64646]'
+                          onClick={() => {
+                            setOpenPopoverId(null);
+                          }}
+                        >
+                          <Image src='/icons/trash.svg' alt='삭제' width={16} height={16} />
+                          삭제
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
             ))}
