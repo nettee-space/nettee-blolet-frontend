@@ -1,0 +1,601 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Article, dummyPosts } from '@/lib/dummy-data';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+type SeriesFormData = z.infer<typeof seriesFormSchema>;
+
+const seriesFormSchema = z.object({
+  seriesName: z.string().min(1, '시리즈 이름을 입력해주세요.').max(30, '최대 30자 초과'),
+  seriesDescription: z.string().optional(),
+});
+
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+export default function AddSeriesPage() {
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [allPosts, setAllPosts] = useState<Article[]>(dummyPosts);
+  const [seriesPosts, setSeriesPosts] = useState<Article[]>([]);
+  const [draggedPostId, setDraggedPostId] = useState<string | null>(null); // 현재 드래그되고 있는 게시글 id
+  const [dragOverContainer, setDragOverContainer] = useState<'all' | 'series' | null>(null); // 마우스가 어떤 드롭 영역 위에 있는지(전체 게시글 또는 현재 시리즈)
+  const [selectedPostIds, setSelectedPostIds] = useState<string[]>([]); // 다중 선택된 게시글 ID들
+  const [rangeSelectionAnchor, setRangeSelectionAnchor] = useState<{
+    container: 'all' | 'series';
+    index: number;
+  } | null>(null); // Shift를 누른 상태에서 범위 선택을 시작한 게시글의 인덱스
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState<boolean>(false); // 이미지 삭제 확인 모달
+  const [dropIndicatorIndex, setDropIndicatorIndex] = useState<number | null>(null); // 드롭 위치 표시용
+
+  const seriesPostRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SeriesFormData>({
+    resolver: zodResolver(seriesFormSchema),
+    defaultValues: {
+      seriesName: '',
+      seriesDescription: '',
+    },
+  });
+
+  // seriesPosts가 변경될 때마다 refs 배열 크기를 맞추기
+  useEffect(() => {
+    seriesPostRefs.current = seriesPostRefs.current.slice(0, seriesPosts.length);
+  }, [seriesPosts.length]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setBannerImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setBannerPreview(previewUrl);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    setBannerImage(null);
+    setBannerPreview(null);
+    setIsDeleteImageModalOpen(false);
+  };
+
+  // ESC 키로 전체 선택 해제
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedPostIds([]);
+        setRangeSelectionAnchor(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // 게시글 (다중) 선택 클릭 핸들러
+  const handlePostClick = (e: React.MouseEvent, post: Article, container: 'all' | 'series') => {
+    e.preventDefault();
+
+    const currentIndex =
+      container === 'all'
+        ? allPosts.findIndex((p) => p.articleId === post.articleId)
+        : seriesPosts.findIndex((p) => p.articleId === post.articleId);
+
+    // Shift 클릭: 범위 선택
+    if (e.shiftKey && rangeSelectionAnchor && rangeSelectionAnchor.container === container) {
+      // 범위의 시작과 끝 인덱스 계산
+      const startIndex = Math.min(rangeSelectionAnchor.index, currentIndex);
+      const endIndex = Math.max(rangeSelectionAnchor.index, currentIndex);
+
+      // 범위 내 게시글들 추출
+      const currentPosts = container === 'all' ? allPosts : seriesPosts;
+      const postsInRange = currentPosts.slice(startIndex, endIndex + 1);
+
+      const updatedSelection = postsInRange.map((post) => post.articleId);
+
+      setSelectedPostIds(updatedSelection);
+      return;
+    }
+
+    // Ctrl/Cmd 클릭: 개별 선택/해제
+    if (e.ctrlKey || e.metaKey) {
+      // 현재 선택된 게시글들이 어떤 영역에 속하는지 확인
+      const selectedInAll = selectedPostIds.some((id) => allPosts.some((p) => p.articleId === id));
+      const selectedInSeries = selectedPostIds.some((id) =>
+        seriesPosts.some((p) => p.articleId === id),
+      );
+
+      // 다른 영역의 게시글을 클릭한 경우 기존 선택 해제하고 새로운 게시글만 선택
+      if (
+        (container === 'all' && selectedInSeries && !selectedInAll) ||
+        (container === 'series' && selectedInAll && !selectedInSeries)
+      ) {
+        setSelectedPostIds([post.articleId]);
+        setRangeSelectionAnchor({ container, index: currentIndex });
+        return;
+      }
+
+      // Ctrl/Cmd 누른 상태에서 이미 선택되어 있는 게시글을 클릭하면 선택 해제
+      if (selectedPostIds.includes(post.articleId)) {
+        setSelectedPostIds(selectedPostIds.filter((id) => id !== post.articleId));
+      } else {
+        // Ctrl/Cmd 누른 상태에서 이미 선택되어 있지 않은 게시글을 클릭하면 선택
+        setSelectedPostIds([...selectedPostIds, post.articleId]);
+      }
+      return;
+    }
+
+    // 일반 클릭 또는 Shift 첫 클릭 시 실행: 단일 선택
+    setSelectedPostIds([post.articleId]);
+    setRangeSelectionAnchor({ container, index: currentIndex });
+  };
+
+  // 드롭 위치 계산 함수
+  const getDropIndexInSeries = (e: React.DragEvent): number => {
+    const seriesItems = seriesPostRefs.current.filter(Boolean);
+    // 기본값을 맨 끝으로 설정, 만약 어떤 게시글보다도 아래에 마우스가 있으면 맨 끝에 삽입
+    let dropIndex = seriesItems.length;
+
+    for (let i = 0; i < seriesItems.length; i++) {
+      const item = seriesItems[i];
+      if (!item) continue;
+
+      const rect = item.getBoundingClientRect();
+      const mouseY = e.clientY; // 마우스 위치 Y 좌표
+      const itemCenterY = rect.top + rect.height / 2; // 각 게시글 중앙 위치
+
+      // 마우스가 게시글 중앙선 위에 있으면 해당 게시글 위에 삽입 (dropIndex = i)
+      // 마우스가 게시글 중앙선 아래에 있으면 다음 게시글과의 사이 또는 맨 끝에 삽입 (계속 탐색)
+      if (mouseY < itemCenterY) {
+        dropIndex = i;
+        break;
+      }
+    }
+
+    return dropIndex;
+  };
+
+  // 드래그 중 마우스가 어떤 드롭 영역 위에 있는지 업데이트
+  const handleDragOver = (e: React.DragEvent, container: 'all' | 'series') => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverContainer(container);
+
+    // 시리즈 컨테이너 위일 경우 드롭 위치 표시
+    if (container === 'series') {
+      const dropIndex = getDropIndexInSeries(e);
+      setDropIndicatorIndex(dropIndex); // 파란색 라인 위치 업데이트
+    } else {
+      setDropIndicatorIndex(null);
+    }
+  };
+
+  // 드래그된 게시글이 드롭 영역을 벗어날 때 호출
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setDragOverContainer(null);
+      setDropIndicatorIndex(null);
+    }
+  };
+
+  // 드래그된 게시글을 드롭 영역에 놓을 때 호출
+  const handleDrop = (e: React.DragEvent, targetContainer: 'all' | 'series') => {
+    e.preventDefault();
+
+    const draggedPostIdFromData = e.dataTransfer.getData('text/plain');
+
+    // 이동할 게시글 결정: 다중 선택 vs 단일 이동
+    const postsToMove =
+      selectedPostIds.includes(draggedPostIdFromData) && selectedPostIds.length > 1
+        ? selectedPostIds
+        : [draggedPostIdFromData];
+
+    // 시리즈 내에서 순서 변경
+    if (targetContainer === 'series') {
+      // 드래그된 게시글이 시리즈에 이미 있는 경우 - 순서 변경
+      const isReorderingInSeries = seriesPosts.some((post) => postsToMove.includes(post.articleId));
+
+      if (isReorderingInSeries) {
+        // 시리즈 내 순서 변경 로직
+        const dropIndex = getDropIndexInSeries(e);
+
+        // 이동할 게시글들을 시리즈에서 찾기
+        const postsToMoveObjects = seriesPosts.filter((post) =>
+          postsToMove.includes(post.articleId),
+        );
+        // 이동할 게시글들을 제외한 나머지 게시글들
+        const remainingPosts = seriesPosts.filter((post) => !postsToMove.includes(post.articleId));
+
+        // 새로운 배열 생성: dropIndex 위치에 이동할 게시글들 삽입
+        const newSeriesPosts = [...remainingPosts];
+        newSeriesPosts.splice(dropIndex, 0, ...postsToMoveObjects);
+
+        setSeriesPosts(newSeriesPosts);
+      } else {
+        // 전체 게시글에서 시리즈로 이동
+        const postsToMoveObjects = allPosts.filter((post) => postsToMove.includes(post.articleId));
+        if (postsToMoveObjects.length > 0) {
+          setAllPosts(allPosts.filter((post) => !postsToMove.includes(post.articleId)));
+
+          // 드롭 위치에 게시글 삽입
+          const dropIndex = getDropIndexInSeries(e);
+          const newSeriesPosts = [...seriesPosts];
+          newSeriesPosts.splice(dropIndex, 0, ...postsToMoveObjects);
+          setSeriesPosts(newSeriesPosts);
+        }
+      }
+    } else if (targetContainer === 'all') {
+      // 시리즈에서 전체 게시글로 이동
+      const postsToMoveObjects = seriesPosts.filter((post) => postsToMove.includes(post.articleId));
+      if (postsToMoveObjects.length > 0) {
+        setSeriesPosts(seriesPosts.filter((post) => !postsToMove.includes(post.articleId)));
+        setAllPosts([...allPosts, ...postsToMoveObjects]);
+      }
+    }
+
+    setSelectedPostIds([]);
+    setDraggedPostId(null);
+    setDragOverContainer(null);
+    setDropIndicatorIndex(null);
+  };
+
+  // 드래그 시작 핸들러
+  const handleDragStart = (e: React.DragEvent, postId: string) => {
+    setDraggedPostId(postId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', postId);
+
+    // 다중 선택된 상태에서 선택되지 않은 게시글을 드래그하면 기존 선택 해제
+    if (!selectedPostIds.includes(postId)) setSelectedPostIds([postId]);
+  };
+
+  // 드래그 종료 핸들러
+  const handleDragEnd = () => {
+    setDraggedPostId(null);
+    setDragOverContainer(null);
+    setDropIndicatorIndex(null);
+  };
+
+  const handleCancel = () => {
+    router.push('/admin/series');
+  };
+
+  const onSubmit = async (data: SeriesFormData) => {
+    try {
+      // 시리즈 게시글 데이터 구조 변경
+      const seriesArticleList = seriesPosts.map((post, index) => ({
+        draftId: post.draftId,
+        articleId: post.articleId,
+        displayOrder: index + 1,
+      }));
+
+      let bannerBase64 = '';
+      if (bannerImage) bannerBase64 = await convertToBase64(bannerImage);
+
+      const requestData = {
+        blogId: '1',
+        title: data.seriesName,
+        description: data.seriesDescription || '',
+        banner: bannerBase64,
+        seriesArticleList,
+      };
+
+      const response = await fetch(`${BASE_URL}/series`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        console.log('시리즈가 성공적으로 저장되었습니다.');
+        router.push('/admin/series');
+      } else {
+        console.error('시리즈 저장 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('API 요청 중 오류가 발생했습니다:', error);
+    }
+  };
+
+  return (
+    <div className='mx-auto w-full max-w-5xl'>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className='flex items-center justify-between text-black'>
+          <h1 className='text-2xl font-bold'>시리즈 추가</h1>
+          <div className='flex gap-3'>
+            <Button
+              type='button'
+              onClick={handleCancel}
+              variant='outline'
+              className='rounded-full border-black px-5 py-1 text-black hover:bg-gray-50'
+            >
+              취소
+            </Button>
+            <Button
+              type='submit'
+              className='rounded-full bg-[#4D4D4D] px-5 py-1 font-semibold text-white hover:bg-[#3D3D3D]'
+            >
+              저장하기
+            </Button>
+          </div>
+        </div>
+
+        <Separator className='my-8 bg-[#CCCCCC]' />
+
+        <div className='mb-6'>
+          <label className='mb-2 block text-sm font-medium text-black'>시리즈 배너</label>
+          <input
+            type='file'
+            accept='image/*'
+            onChange={handleImageChange}
+            className='hidden'
+            id='banner-upload'
+          />
+          <label
+            htmlFor='banner-upload'
+            className='flex h-40 w-full cursor-pointer items-center justify-center rounded-lg border border-[#CCCCCC] bg-white transition-colors hover:bg-[#F2F2F2]'
+          >
+            {bannerPreview ? (
+              <div className='relative h-full w-full'>
+                <Image
+                  src={bannerPreview}
+                  alt='시리즈 배너 미리보기'
+                  fill
+                  className='rounded-lg object-cover'
+                />
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='icon'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsDeleteImageModalOpen(true);
+                  }}
+                  className='absolute top-2 right-2 h-8 w-8 rounded-full bg-[#E6E6E9] text-gray-600 backdrop-blur-sm transition-all hover:bg-[#D0D0D3]'
+                >
+                  <svg
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <path d='M18 6L6 18M6 6l12 12' />
+                  </svg>
+                </Button>
+              </div>
+            ) : (
+              <div className='text-center'>
+                <div className='mb-3 flex justify-center'>
+                  <Image
+                    src='/icons/image-upload.svg'
+                    alt='이미지 업로드'
+                    width={40}
+                    height={40}
+                    className='text-gray-400'
+                  />
+                </div>
+                <p className='mb-1 text-sm font-medium text-black'>
+                  이미지를 업로드 하려면 클릭 또는 파일을 드래그 해주세요.
+                </p>
+                <p className='text-xs text-gray-400'>이미지 권장 크기 0000x0000 픽셀</p>
+              </div>
+            )}
+          </label>
+        </div>
+
+        <div className='mb-6'>
+          <div className='mb-2 flex items-center gap-x-2'>
+            <label className='text-sm font-medium text-black'>시리즈 이름</label>
+            {errors.seriesName && (
+              <p className='text-sm font-medium text-[#F64646]'>{errors.seriesName.message}</p>
+            )}
+          </div>
+          <Input
+            {...register('seriesName')}
+            placeholder='이름을 입력해주세요. 최대 30글자'
+            className={`border-[#CCCCCC] focus:outline-none focus-visible:border-[#CCCCCC] focus-visible:ring-0 focus-visible:outline-none ${
+              errors.seriesName && 'border-[#F64646] focus-visible:border-[#F64646]'
+            }`}
+          />
+        </div>
+
+        <div className='mb-8'>
+          <label className='mb-2 block text-sm font-medium text-black'>시리즈 설명</label>
+          <Textarea
+            {...register('seriesDescription')}
+            placeholder='시리즈에 대한 설명을 입력해주세요. 최대 ???자'
+            className='min-h-[100px] border-[#CCCCCC] focus:outline-none focus-visible:border-[#CCCCCC] focus-visible:ring-0 focus-visible:outline-none'
+          />
+        </div>
+
+        <div className='mb-6'>
+          <label className='mb-2 block text-sm font-medium text-black'>게시글 관리</label>
+          <div className='flex flex-col items-center gap-2 sm:flex-row'>
+            <div
+              className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
+                dragOverContainer === 'all' ? 'border-[#999999]' : 'border-[#CCCCCC]'
+              }`}
+              onDragOver={(e) => handleDragOver(e, 'all')}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, 'all')}
+            >
+              <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
+                <span className='text-sm font-medium text-black'>전체 게시글</span>
+                <span className='text-sm text-[#999999]'>{allPosts.length}</span>
+              </div>
+              {allPosts.map((post) => (
+                <div
+                  key={post.articleId}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, post.articleId)}
+                  onDragEnd={handleDragEnd}
+                  onClick={(e) => handlePostClick(e, post, 'all')}
+                  className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
+                    selectedPostIds.includes(post.articleId) ? 'bg-[#F2F2F2]' : 'hover:bg-gray-50'
+                  } ${draggedPostId && selectedPostIds.includes(post.articleId) && 'scale-95 opacity-50'}`}
+                >
+                  <div className='flex items-center gap-2'>
+                    <Image
+                      src='/icons/drag.svg'
+                      alt='드래그'
+                      width={16}
+                      height={16}
+                      className='size-6'
+                    />
+                    <span className='text-sm text-black'>
+                      {post.articleTitle || `게시글 ${post.articleId}`}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className='flex items-center justify-center'>
+              <Image
+                src='/icons/exchange.svg'
+                alt='게시글 이동'
+                width={24}
+                height={24}
+                className='size-8 rotate-90 sm:rotate-0'
+              />
+            </div>
+
+            <div
+              className={`h-80 w-full overflow-y-auto rounded-lg border bg-white transition-all duration-200 sm:flex-1 ${
+                dragOverContainer === 'series' ? 'border-[#999999]' : 'border-[#CCCCCC]'
+              }`}
+              onDragOver={(e) => handleDragOver(e, 'series')}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, 'series')}
+            >
+              <div className='sticky top-0 flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3'>
+                <span className='text-sm font-medium text-black'>현재 시리즈</span>
+                <span className='text-sm text-[#999999]'>{seriesPosts.length}</span>
+              </div>
+              {seriesPosts.length === 0 ? (
+                <div className='flex h-[calc(100%-45px)] items-center justify-center text-center'>
+                  <div>
+                    <p className='text-sm text-[#999999]'>
+                      왼쪽 글 목록을 드래그하여
+                      <br />
+                      시리즈에 추가해보세요
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                seriesPosts.map((post, index) => (
+                  <div key={post.articleId}>
+                    {/* 각 게시글 위쪽에 표시되는 파란색 라인 드롭 인디케이터 */}
+                    {dropIndicatorIndex === index && (
+                      <div className='mx-4 h-0.5 rounded-full bg-blue-500' />
+                    )}
+                    <div
+                      ref={(el) => {
+                        seriesPostRefs.current[index] = el;
+                      }}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, post.articleId)}
+                      onDragEnd={handleDragEnd}
+                      onClick={(e) => handlePostClick(e, post, 'series')}
+                      className={`flex cursor-move items-center border-b border-gray-100 px-4 py-3 transition-all duration-200 last:border-b-0 ${
+                        selectedPostIds.includes(post.articleId)
+                          ? 'bg-[#F2F2F2]'
+                          : 'hover:bg-gray-50'
+                      } ${
+                        draggedPostId && selectedPostIds.includes(post.articleId)
+                          ? 'scale-95 opacity-30'
+                          : ''
+                      }`}
+                    >
+                      <div className='flex items-center gap-2'>
+                        <Image
+                          src='/icons/drag.svg'
+                          alt='드래그'
+                          width={16}
+                          height={16}
+                          className='size-6'
+                        />
+                        <span className='text-sm text-black'>
+                          {post.articleTitle || `게시글 ${post.articleId}`}
+                        </span>
+                      </div>
+                    </div>
+                    {/* 마지막 게시글 아래쪽에 표시되는 파란색 라인 드롭 인디케이터 */}
+                    {dropIndicatorIndex === seriesPosts.length &&
+                      index === seriesPosts.length - 1 && (
+                        <div className='mx-4 h-0.5 rounded-full bg-blue-500' />
+                      )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </form>
+
+      {/* 이미지 삭제 확인 모달 */}
+      <Dialog open={isDeleteImageModalOpen} onOpenChange={setIsDeleteImageModalOpen}>
+        <DialogContent className='sm:max-w-[425px]' showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className='text-center text-lg font-medium text-black'>
+              등록한 이미지를 삭제 하시겠습니까?
+            </DialogTitle>
+          </DialogHeader>
+          <DialogFooter className='flex gap-2 pt-4'>
+            <Button
+              type='button'
+              onClick={handleDeleteImage}
+              className='flex-1 rounded-lg bg-[#F2F2F2] px-4 py-3 text-black hover:bg-[#E8E8E8]'
+            >
+              삭제
+            </Button>
+            <Button
+              type='button'
+              onClick={() => setIsDeleteImageModalOpen(false)}
+              className='flex-1 rounded-lg bg-[#F2F2F2] px-4 py-3 text-black hover:bg-[#E8E8E8]'
+            >
+              취소
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
