@@ -11,7 +11,7 @@ import {
   autoformatSmartQuotes,
 } from '@platejs/autoformat';
 import { insertEmptyCodeBlock } from '@platejs/code-block';
-// import { insertLink } from '@platejs/link';
+import { insertLink } from '@platejs/link';
 import { toggleList } from '@platejs/list';
 import { KEYS } from 'platejs';
 
@@ -87,35 +87,42 @@ const autoformatMarks: AutoformatRule[] = [
     type: KEYS.code,
   },
 ];
-// todo 링크 마크다운 커스텀
-// export const autoformatLinks: AutoformatRule[] = [
-//   {
-//     mode: 'text',
-//     match: [')'], // ')' 입력 시 format 실행
-//     format: (editor) => {
-//       const block = editor.api.block();
-//       const text = block?.[0]?.children[0]?.text as string;
+// 마크다운 링크 형식을 처리하는 규칙
+const autoformatLinks: AutoformatRule[] = [
+  {
+    match: ')',
+    mode: 'text',
+    insertTrigger: true,
+    format: (editor) => {
+      const block = editor.api.block();
+      if (!block) {
+        return;
+      }
 
-//       // [텍스트](URL) 패턴 감지
-//       const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)/);
+      //insertTrigger 이후 실행되도록 비동기 처리
+      Promise.resolve().then(() => {
+        const text = editor.api.string(block[1]);
 
-//       if (!block?.[0]?.children[0]?.text.length) {
-//         console.log('변경 안됨');
-//         return;
-//       }
+        const linkMatch = text.match(/\[([^\]]+)\]\(([^)]+)\)$/);
 
-//       if (linkMatch && linkMatch.length >= 3) {
-//         editor.api.block()[0].children[0].text = '';
-//         insertLink(editor, {
-//           url: linkMatch?.[2] || '',
-//           text: linkMatch?.[1] || '',
-//         });
-//       } else {
-//         editor.api.block()[0].children[0].text = text + ')';
-//       }
-//     },
-//   },
-// ];
+        if (linkMatch && linkMatch.length >= 3) {
+          const [markdownText, text, url] = linkMatch;
+
+          for (let i = 0; i < markdownText.length; i++) {
+            editor.tf.deleteBackward('character');
+          }
+
+          insertLink(editor, {
+            url,
+            text: text,
+          });
+
+          editor.tf.insertText(' ');
+        }
+      });
+    },
+  },
+];
 
 const autoformatBlocks: AutoformatRule[] = [
   {
@@ -251,7 +258,7 @@ export const AutoformatKit = [
         ...autoformatArrow,
         ...autoformatMath,
         ...autoformatLists,
-        // ...autoformatLinks,
+        ...autoformatLinks,
       ].map(
         (rule): AutoformatRule => ({
           ...rule,
