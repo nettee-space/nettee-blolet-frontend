@@ -1,10 +1,11 @@
 'use client';
 
-import * as React from 'react';
-
 import { BoldIcon, Code2Icon, ItalicIcon, StrikethroughIcon, UnderlineIcon } from 'lucide-react';
+import { BaselineIcon, PaintBucketIcon } from 'lucide-react';
 import { KEYS } from 'platejs';
 import { useEditorReadOnly } from 'platejs/react';
+
+import * as React from 'react';
 
 import { InlineEquationToolbarButton } from './equation-toolbar-button';
 import { FontColorToolbarButton } from './font-color-toolbar-button';
@@ -12,7 +13,6 @@ import { LinkToolbarButton } from './link-toolbar-button';
 import { MarkToolbarButton } from './mark-toolbar-button';
 import { ToolbarGroup } from './toolbar';
 import { TurnIntoToolbarButton } from './turn-into-toolbar-button';
-import { BaselineIcon, PaintBucketIcon } from 'lucide-react';
 
 export function FloatingToolbarButtons() {
   const readOnly = useEditorReadOnly();

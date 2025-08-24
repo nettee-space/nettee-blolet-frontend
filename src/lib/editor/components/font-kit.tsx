@@ -1,13 +1,13 @@
 'use client';
 
-import { KEYS } from 'platejs';
-import type { PlatePluginConfig } from 'platejs/react';
 import {
   FontBackgroundColorPlugin,
   FontColorPlugin,
   FontFamilyPlugin,
   FontSizePlugin,
 } from '@platejs/basic-styles/react';
+import { KEYS } from 'platejs';
+import type { PlatePluginConfig } from 'platejs/react';
 
 const options = {
   inject: {

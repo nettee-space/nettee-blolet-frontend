@@ -1,12 +1,11 @@
 'use client';
 
-import React from 'react';
-
 import type { DropdownMenuItemProps, DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
-
 import { useComposedRef } from '@udecode/cn';
 import { EraserIcon, PlusIcon } from 'lucide-react';
 import { useEditorRef, useEditorSelector } from 'platejs/react';
+
+import React from 'react';
 
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -215,7 +214,6 @@ function ColorCustom({
     [customColor, customColors],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   // todo updatecustom 디바운스 처리 필요
   const updateCustomColorDebounced = React.useCallback(updateCustomColor, [updateCustomColor]);
 

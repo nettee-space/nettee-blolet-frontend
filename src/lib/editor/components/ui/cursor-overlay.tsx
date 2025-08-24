@@ -1,14 +1,13 @@
 'use client';
 
-import * as React from 'react';
-
 import {
   type CursorData,
   type CursorOverlayState,
   useCursorOverlay,
 } from '@platejs/selection/react';
 import { RangeApi } from 'platejs';
-import { usePluginOption } from 'platejs/react';
+
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 

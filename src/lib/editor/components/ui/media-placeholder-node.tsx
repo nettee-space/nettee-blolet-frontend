@@ -1,15 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
 'use client';
-
-import * as React from 'react';
-
-import type { TPlaceholderElement } from 'platejs';
-import type { PlateElementProps } from 'platejs/react';
 
 import { PlaceholderPlugin, PlaceholderProvider, updateUploadHistory } from '@platejs/media/react';
 import { AudioLines, FileUp, Film, ImageIcon, Loader2Icon } from 'lucide-react';
+import type { TPlaceholderElement } from 'platejs';
 import { KEYS } from 'platejs';
+import type { PlateElementProps } from 'platejs/react';
 import { PlateElement, useEditorPlugin, withHOC } from 'platejs/react';
 import { useFilePicker } from 'use-file-picker';
+
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -55,7 +56,7 @@ export const PlaceholderElement = withHOC(
     const loading = false;
     const progress = 0;
     const uploadedFile = null;
-    const uploadingFile = null;
+    // const uploadingFile = null;
     const uploadFile = React.useCallback(async (file: File) => {
       // Simulate file upload
       return new Promise((resolve) => {
@@ -125,7 +126,6 @@ export const PlaceholderElement = withHOC(
       });
 
       api.placeholder.removeUploadingFile(element.id as string);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uploadedFile, element.id]);
 
     // React dev mode will call React.useEffect twice
@@ -141,8 +141,6 @@ export const PlaceholderElement = withHOC(
       if (!currentFiles) return;
 
       replaceCurrentPlaceholder(currentFiles);
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isReplaced]);
 
     return (
@@ -229,23 +227,23 @@ export function ImageProgress({
   );
 }
 
-function formatBytes(
-  bytes: number,
-  opts: {
-    decimals?: number;
-    sizeType?: 'accurate' | 'normal';
-  } = {},
-) {
-  const { decimals = 0, sizeType = 'normal' } = opts;
+// function formatBytes(
+//   bytes: number,
+//   opts: {
+//     decimals?: number;
+//     sizeType?: 'accurate' | 'normal';
+//   } = {},
+// ) {
+//   const { decimals = 0, sizeType = 'normal' } = opts;
 
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
+//   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+//   const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
 
-  if (bytes === 0) return '0 Byte';
+//   if (bytes === 0) return '0 Byte';
 
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+//   const i = Math.floor(Math.log(bytes) / Math.log(1024));
 
-  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === 'accurate' ? (accurateSizes[i] ?? 'Bytest') : (sizes[i] ?? 'Bytes')
-  }`;
-}
+//   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
+//     sizeType === 'accurate' ? (accurateSizes[i] ?? 'Bytest') : (sizes[i] ?? 'Bytes')
+//   }`;
+// }

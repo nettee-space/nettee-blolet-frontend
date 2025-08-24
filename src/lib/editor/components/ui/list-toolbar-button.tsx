@@ -1,14 +1,11 @@
 'use client';
 
-import * as React from 'react';
-
 import { ListStyleType, someList, toggleList } from '@platejs/list';
-import {
-  useIndentTodoToolBarButton,
-  useIndentTodoToolBarButtonState,
-} from '@platejs/list/react';
+import { useIndentTodoToolBarButton, useIndentTodoToolBarButtonState } from '@platejs/list/react';
 import { List, ListOrdered, ListTodoIcon } from 'lucide-react';
 import { useEditorRef, useEditorSelector } from 'platejs/react';
+
+import * as React from 'react';
 
 import {
   DropdownMenu,
@@ -30,19 +27,14 @@ export function BulletedListToolbarButton() {
   const [open, setOpen] = React.useState(false);
 
   const pressed = useEditorSelector(
-    (editor) =>
-      someList(editor, [
-        ListStyleType.Disc,
-        ListStyleType.Circle,
-        ListStyleType.Square,
-      ]),
-    []
+    (editor) => someList(editor, [ListStyleType.Disc, ListStyleType.Circle, ListStyleType.Square]),
+    [],
   );
 
   return (
     <ToolbarSplitButton pressed={open}>
       <ToolbarSplitButtonPrimary
-        className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+        className='data-[state=on]:bg-accent data-[state=on]:text-accent-foreground'
         onClick={() => {
           toggleList(editor, {
             listStyleType: ListStyleType.Disc,
@@ -50,7 +42,7 @@ export function BulletedListToolbarButton() {
         }}
         data-state={pressed ? 'on' : 'off'}
       >
-        <List className="size-4" />
+        <List className='size-4' />
       </ToolbarSplitButtonPrimary>
 
       <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
@@ -58,7 +50,7 @@ export function BulletedListToolbarButton() {
           <ToolbarSplitButtonSecondary />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="start" alignOffset={-32}>
+        <DropdownMenuContent align='start' alignOffset={-32}>
           <DropdownMenuGroup>
             <DropdownMenuItem
               onClick={() =>
@@ -67,8 +59,8 @@ export function BulletedListToolbarButton() {
                 })
               }
             >
-              <div className="flex items-center gap-2">
-                <div className="size-2 rounded-full border border-current bg-current" />
+              <div className='flex items-center gap-2'>
+                <div className='size-2 rounded-full border border-current bg-current' />
                 Default
               </div>
             </DropdownMenuItem>
@@ -79,8 +71,8 @@ export function BulletedListToolbarButton() {
                 })
               }
             >
-              <div className="flex items-center gap-2">
-                <div className="size-2 rounded-full border border-current" />
+              <div className='flex items-center gap-2'>
+                <div className='size-2 rounded-full border border-current' />
                 Circle
               </div>
             </DropdownMenuItem>
@@ -91,8 +83,8 @@ export function BulletedListToolbarButton() {
                 })
               }
             >
-              <div className="flex items-center gap-2">
-                <div className="size-2 border border-current bg-current" />
+              <div className='flex items-center gap-2'>
+                <div className='size-2 border border-current bg-current' />
                 Square
               </div>
             </DropdownMenuItem>
@@ -116,13 +108,13 @@ export function NumberedListToolbarButton() {
         ListStyleType.LowerRoman,
         ListStyleType.UpperRoman,
       ]),
-    []
+    [],
   );
 
   return (
     <ToolbarSplitButton pressed={open}>
       <ToolbarSplitButtonPrimary
-        className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+        className='data-[state=on]:bg-accent data-[state=on]:text-accent-foreground'
         onClick={() =>
           toggleList(editor, {
             listStyleType: ListStyleType.Decimal,
@@ -130,7 +122,7 @@ export function NumberedListToolbarButton() {
         }
         data-state={pressed ? 'on' : 'off'}
       >
-        <ListOrdered className="size-4" />
+        <ListOrdered className='size-4' />
       </ToolbarSplitButtonPrimary>
 
       <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
@@ -138,7 +130,7 @@ export function NumberedListToolbarButton() {
           <ToolbarSplitButtonSecondary />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="start" alignOffset={-32}>
+        <DropdownMenuContent align='start' alignOffset={-32}>
           <DropdownMenuGroup>
             <DropdownMenuItem
               onSelect={() =>
@@ -192,14 +184,12 @@ export function NumberedListToolbarButton() {
   );
 }
 
-export function TodoListToolbarButton(
-  props: React.ComponentProps<typeof ToolbarButton>
-) {
+export function TodoListToolbarButton(props: React.ComponentProps<typeof ToolbarButton>) {
   const state = useIndentTodoToolBarButtonState({ nodeType: 'todo' });
   const { props: buttonProps } = useIndentTodoToolBarButton(state);
 
   return (
-    <ToolbarButton {...props} {...buttonProps} tooltip="Todo">
+    <ToolbarButton {...props} {...buttonProps} tooltip='Todo'>
       <ListTodoIcon />
     </ToolbarButton>
   );

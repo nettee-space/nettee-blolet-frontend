@@ -1,15 +1,9 @@
 'use client';
 
-import * as React from 'react';
-
 import type { PlateElementProps } from 'platejs/react';
+import { PlateElement, useFocused, useReadOnly, useSelected } from 'platejs/react';
 
-import {
-  PlateElement,
-  useFocused,
-  useReadOnly,
-  useSelected,
-} from 'platejs/react';
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -20,12 +14,12 @@ export function HrElement(props: PlateElementProps) {
 
   return (
     <PlateElement {...props}>
-      <div className="py-6" contentEditable={false}>
+      <div className='py-6' contentEditable={false}>
         <hr
           className={cn(
-            'h-0.5 rounded-sm border-none bg-muted bg-clip-content',
-            selected && focused && 'ring-2 ring-ring ring-offset-2',
-            !readOnly && 'cursor-pointer'
+            'bg-muted h-0.5 rounded-sm border-none bg-clip-content',
+            selected && focused && 'ring-ring ring-2 ring-offset-2',
+            !readOnly && 'cursor-pointer',
           )}
         />
       </div>
