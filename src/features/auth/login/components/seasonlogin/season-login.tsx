@@ -1,14 +1,24 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
-const SeasonLogin = () => {
+import Button from '@/shared/components/ui/button';
+import Input from '@/shared/components/ui/input';
+
+const SeasonLogin: React.FC = () => {
+  const router = useRouter();
   const [isLoginMode, setIsLoginMode] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
+
   const handleLogin = () => {
     window.location.reload();
   };
+  const handleSignup = () => {
+    router.push('/auth/signup/email');
+  };
+
   return (
-    <div className='flex items-center justify-center'>
+    <div className='flex items-center justify-center rounded-lg bg-white'>
       <div className='w-[426px] rounded-lg border p-14'>
         {isLoginMode ? (
           <div>
@@ -16,15 +26,15 @@ const SeasonLogin = () => {
               <p className='-mt-8 text-2xl font-bold text-[#0E0E0F]'>로그인</p>
             </div>
             <div className='mt-8 flex flex-col gap-4'>
-              <input
+              <Input
+                className='text-md h-11 tracking-[-0.03em]'
                 type='email'
                 placeholder='이메일을 입력하세요.'
-                className='h-12 rounded-lg border p-5 text-sm font-bold tracking-[-0.03em]'
               />
-              <input
+              <Input
+                className='text-md h-11 tracking-[-0.03em]'
                 type='password'
                 placeholder='비밀번호를 입력하세요.'
-                className='h-12 rounded-lg border p-5 text-sm font-bold tracking-[-0.03em]'
               />
               <div className='flex items-center gap-2'>
                 <input
@@ -35,17 +45,14 @@ const SeasonLogin = () => {
                 />
                 <span className='text-sm font-medium text-[#6C6F78]'>자동 로그인</span>
               </div>
-              <button
-                className='h-12 w-full rounded-lg bg-[#6B66F4] font-bold text-white'
-                onClick={handleLogin}
-              >
+              <Button size='full' onClick={handleLogin}>
                 로그인
-              </button>
+              </Button>
             </div>
             <div className='mt-4 flex justify-center gap-3 p-1 text-sm tracking-[-0.02em]'>
-              <button>이메일 찾기</button>
-              <span>|</span>
-              <button>비밀번호 찾기</button>
+              <button className='text-[#6C6F78] hover:text-[#0E0E0F]'>이메일 찾기</button>
+              <span className='text-[#6C6F78]'>|</span>
+              <button className='text-[#6C6F78] hover:text-[#0E0E0F]'>비밀번호 찾기</button>
             </div>
           </div>
         ) : (
@@ -59,27 +66,28 @@ const SeasonLogin = () => {
             />
 
             <div className='mt-8 flex flex-col items-center gap-4 p-3'>
-              <button className='h-12 w-88 rounded-lg border bg-[#6B66F4] text-sm font-bold tracking-[-0.03em] text-white'>
+              <Button onClick={handleSignup} className='h-13 w-87'>
                 처음이신가요?
-              </button>
-              <button
-                className='h-12 w-88 rounded-lg border text-sm font-bold tracking-[-0.03em] text-[#6B66F4]'
+              </Button>
+              <Button
+                variant='secondary'
+                className='h-10 w-87'
                 onClick={() => setIsLoginMode(true)}
               >
                 다시 만나 반가워요!
-              </button>
+              </Button>
             </div>
 
             <div className='mt-4 flex justify-center gap-3 text-sm tracking-[-0.02em] text-[#6C6F78]'>
-              <button>이메일 찾기</button>
+              <button className='hover:text-[#0E0E0F]'>이메일 찾기</button>
               <span>|</span>
-              <button>비밀번호 찾기</button>
+              <button className='hover:text-[#0E0E0F]'>비밀번호 찾기</button>
             </div>
 
             <div className='my-6 flex items-center'>
-              <div className='flex-grow border-t border-gray-300'></div>
+              <div className='flex-grow border-t border-gray-300' />
               <span className='mx-4 text-sm text-gray-500'>또는</span>
-              <div className='flex-grow border-t border-gray-300'></div>
+              <div className='flex-grow border-t border-gray-300' />
             </div>
 
             <div className='mt-6 flex justify-center'>
@@ -88,21 +96,21 @@ const SeasonLogin = () => {
                 alt='Apple 로그인'
                 width={40}
                 height={40}
-                className='mx-auto'
+                className='mx-auto cursor-pointer transition-opacity hover:opacity-80'
               />
               <Image
                 src='/icons/Google.png'
                 alt='Google 로그인'
                 width={40}
                 height={40}
-                className='mx-auto'
+                className='mx-auto cursor-pointer transition-opacity hover:opacity-80'
               />
               <Image
                 src='/icons/Github.png'
-                alt='GIthub 로그인'
+                alt='Github 로그인'
                 width={40}
                 height={40}
-                className='mx-auto'
+                className='mx-auto cursor-pointer transition-opacity hover:opacity-80'
               />
             </div>
           </div>

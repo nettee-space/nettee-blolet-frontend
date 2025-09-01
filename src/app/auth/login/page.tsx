@@ -1,35 +1,45 @@
 'use client';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-import BasicLoginModal from '@/features/auth/login/components/BasicLoginModal/basic-login-modal';
-import SeasonLoginModal from '@/features/auth/login/components/SeasonLoginModal/season-login-modal';
+import BasicLoginModal from '@/features/auth/login/components/basiclogin/basic-login-modal';
+import SeasonLoginModal from '@/features/auth/login/components/seasonlogin/season-login-modal';
+import Button from '@/shared/components/ui/button';
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
   const [showSeasonLoginModal, setShowSeasonLoginModal] = useState(false);
   const [showBasicLoginModal, setShowBasicLoginModal] = useState(false);
 
   return (
-    <div>
-      <button
-        onClick={() => setShowSeasonLoginModal(true)}
-        className='rounded bg-blue-500 px-4 py-2 text-white'
-      >
-        기간제 로그인
-      </button>
-      <SeasonLoginModal
-        isOpen={showSeasonLoginModal}
-        onClose={() => setShowSeasonLoginModal(false)}
-      />
-      <div>
-        <p>빈공간</p>
+    <div className='space-y-8 p-8'>
+      <div className='flex flex-col items-center gap-4'>
+        <Button
+          onClick={() => setShowSeasonLoginModal(true)}
+          className='bg-blue-500 hover:bg-blue-600'
+        >
+          기간제 로그인
+        </Button>
+
+        <SeasonLoginModal
+          isOpen={showSeasonLoginModal}
+          onClose={() => setShowSeasonLoginModal(false)}
+        />
+
+        <div className='py-8'>
+          <p className='text-center text-gray-500'>빈공간</p>
+        </div>
+
+        <Button
+          onClick={() => setShowBasicLoginModal(true)}
+          className='bg-blue-500 hover:bg-blue-600'
+        >
+          기본 로그인
+        </Button>
+
+        <BasicLoginModal
+          isOpen={showBasicLoginModal}
+          onClose={() => setShowBasicLoginModal(false)}
+        />
       </div>
-      <button
-        onClick={() => setShowBasicLoginModal(true)}
-        className='rounded bg-blue-500 px-4 py-2 text-white'
-      >
-        기본 로그인
-      </button>
-      <BasicLoginModal isOpen={showBasicLoginModal} onClose={() => setShowBasicLoginModal(false)} />
     </div>
   );
 };

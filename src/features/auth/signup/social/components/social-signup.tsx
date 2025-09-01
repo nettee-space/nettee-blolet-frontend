@@ -1,22 +1,14 @@
 'use client';
 
-import { ChevronRight, Eye, EyeOff, Info, MoveLeft } from 'lucide-react';
+import { ChevronRight, Info, MoveLeft } from 'lucide-react';
 
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
 
 import Button from '@/shared/components/ui/button';
 import Input from '@/shared/components/ui/input';
 
-import EmailOTPModal from './email-otp-modal';
-
-const EmailSignup = () => {
+const SocialSignup = () => {
   const router = useRouter();
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [otpModalOpen, setOtpModalOpen] = useState(false);
 
   const handleNext = () => {
     router.push('/onboarding');
@@ -34,60 +26,12 @@ const EmailSignup = () => {
         {/* 이메일 */}
         <div>
           <p className='mb-2 font-bold tracking-[-0.05em] text-[#0E0E0F]'>이메일*</p>
-          <div className='flex gap-2'>
-            <Input
-              type='email'
-              placeholder='example@email.com'
-              className='text-md h-12 w-88 tracking-[-0.05em]'
-            />
-            <Button variant='secondary' className='w-26' onClick={() => setOtpModalOpen(true)}>
-              인증요청
-            </Button>
-          </div>
+          <Input
+            type='email'
+            placeholder='example@email.com'
+            className='text-md h-12 w-118 tracking-[-0.05em]'
+          />
         </div>
-
-        {/* 비밀번호 */}
-        <div>
-          <p className='mb-2 font-bold tracking-[-0.05em] text-[#0E0E0F]'>비밀번호*</p>
-          <div className='relative'>
-            <Input
-              type={showPassword ? 'text' : 'password'}
-              placeholder='●●●●●●●●'
-              value={password || ''}
-              onChange={(e) => setPassword(e.target.value)}
-              className='text-md h-12 w-118 pr-12 tracking-[-0.05em]'
-            />
-            <button
-              type='button'
-              onClick={() => setShowPassword(!showPassword)}
-              className='absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700'
-            >
-              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-            </button>
-          </div>
-        </div>
-
-        {/* 비밀번호 확인*/}
-        <div>
-          <p className='mb-2 font-bold tracking-[-0.05em] text-[#0E0E0F]'>비밀번호 확인*</p>
-          <div className='relative'>
-            <Input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder='●●●●●●●●'
-              value={confirmPassword || ''}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className='text-md h-12 w-118 pr-12 tracking-[-0.05em]'
-            />
-            <button
-              type='button'
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className='absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700'
-            >
-              {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-            </button>
-          </div>
-        </div>
-
         {/* 도메인 이름 */}
         <div className='mb-20'>
           <div className='flex gap-2'>
@@ -161,9 +105,8 @@ const EmailSignup = () => {
           </div>
         </div>
       </div>
-      <EmailOTPModal isOpen={otpModalOpen} onClose={() => setOtpModalOpen(false)} />
     </div>
   );
 };
 
-export default EmailSignup;
+export default SocialSignup;
