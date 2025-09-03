@@ -30,7 +30,7 @@ interface SeriesSelectProps {
   selectedSeries?: string;
 }
 
-export default function SeriesSelect({ onSeriesChange, selectedSeries }: SeriesSelectProps) {
+export default function PublishSeriesSelect({ onSeriesChange, selectedSeries }: SeriesSelectProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (currentValue: string) => {
