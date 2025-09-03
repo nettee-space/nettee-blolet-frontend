@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 import EditWrapper from './edit-wrapper';
+import PublishBottomSheet from './publish-bottom-sheet';
 import SideBarWrapper from './sidebar-wrapper';
 
 export default function Edit() {
@@ -16,6 +17,7 @@ export default function Edit() {
     <div className='relative mx-auto flex h-dvh w-full max-w-[1920px] items-center justify-between overflow-hidden'>
       <SideBarWrapper sidebar={sidebar} close={closeSidebar} />
       <EditWrapper sidebar={sidebar} open={openSidebar} />
+      <PublishBottomSheet />
     </div>
   );
 }

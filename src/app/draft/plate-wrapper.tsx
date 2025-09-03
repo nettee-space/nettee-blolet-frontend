@@ -1,5 +1,3 @@
-'use client';
-
 import { PlateEditor } from '@/lib/editor/components/plate-editor';
 
 export default function PlateWrapper() {
