@@ -1,4 +1,5 @@
 'use client';
+
 import SideBarAdmin from './sidebar-admin';
 import SideBarDraft from './sidebar-draft';
 import SideBarFunction from './sidebar-function';
@@ -10,9 +11,9 @@ interface SideWrapperProps {
   sidebar?: boolean;
 }
 
-export default function SideBarWrapper({ close, sidebar }: SideWrapperProps) {
+export default function DraftSideBar({ close, sidebar }: SideWrapperProps) {
   const baseClass =
-    'flex h-full w-full flex-col justify-between border-[#ccc] px-[30px] py-[32px] text-[18px] leading-[30px] text-[#000] sm:w-[300px] transition-all duration-300';
+    'flex h-full w-full flex-col justify-between bg-white z-60 px-[30px] py-[32px] text-[18px] leading-[30px] text-[#000] sm:w-[300px] transition-all duration-300 sm:relative fixed ';
 
   const hiddenClass = 'left-[100%] hidden';
 

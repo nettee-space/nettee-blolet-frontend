@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-// 타입 정의 추가
 interface Series {
   value: string;
 }
@@ -30,7 +29,7 @@ interface SeriesSelectProps {
   selectedSeries?: string;
 }
 
-export default function PublishSeriesSelect({ onSeriesChange, selectedSeries }: SeriesSelectProps) {
+export default function SeriesSelect({ onSeriesChange, selectedSeries }: SeriesSelectProps) {
   const [open, setOpen] = useState(false);
 
   const handleSelect = (currentValue: string) => {

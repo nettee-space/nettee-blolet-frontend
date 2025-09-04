@@ -1,11 +1,11 @@
 'use client';
 import { useState } from 'react';
 
-import EditWrapper from './edit-wrapper';
-import PublishBottomSheet from './publish-bottom-sheet';
-import SideBarWrapper from './sidebar-wrapper';
+import DraftContents from './components/draft-contents';
+import DraftSideBar from './components/draft-side-bar.tsx';
+import PublishBottomSheet from './components/publish-bottom-sheet';
 
-export default function Edit() {
+export default function Draft() {
   const [sidebar, setSidebar] = useState(true);
   const openSidebar = () => {
     setSidebar(true);
@@ -15,8 +15,8 @@ export default function Edit() {
   };
   return (
     <div className='relative mx-auto flex h-dvh w-full max-w-[1920px] items-center justify-between overflow-hidden'>
-      <SideBarWrapper sidebar={sidebar} close={closeSidebar} />
-      <EditWrapper sidebar={sidebar} open={openSidebar} />
+      <DraftSideBar sidebar={sidebar} close={closeSidebar} />
+      <DraftContents sidebar={sidebar} open={openSidebar} />
       <PublishBottomSheet />
     </div>
   );

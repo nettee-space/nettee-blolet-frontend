@@ -38,7 +38,7 @@ export default function EditTop({ open, sidebar }: EditTopProps) {
       className={
         sidebar
           ? 'absolute top-0 z-50 flex h-20 w-full max-w-[1920px] items-center justify-end bg-white px-[37px]'
-          : 'fixed top-0 z-50 flex h-20 w-full max-w-[1920px] items-center justify-between bg-white px-[37px]'
+          : 'absolute top-0 z-50 flex h-20 w-full max-w-[1920px] items-center justify-between bg-white px-[37px]'
       }
     >
       <button onClick={open} className={sidebar ? 'hidden' : 'flex items-center'}>

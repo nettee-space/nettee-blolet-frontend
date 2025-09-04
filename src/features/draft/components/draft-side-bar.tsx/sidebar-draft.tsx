@@ -1,4 +1,3 @@
-'use client';
 import Image from 'next/image';
 
 import {
@@ -28,12 +27,6 @@ export default function SideBarDraft() {
       <Accordion type='single' collapsible>
         <AccordionItem value='item-1'>
           <AccordionTrigger>My Draft</AccordionTrigger>
-          <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      <Accordion type='single' collapsible>
-        <AccordionItem value='item-2'>
-          <AccordionTrigger>Published</AccordionTrigger>
           <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
         </AccordionItem>
       </Accordion>

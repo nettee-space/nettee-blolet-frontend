@@ -72,7 +72,7 @@ const editorVariants = cva(
       },
       variant: {
         comment: cn('rounded-none border-none bg-transparent text-sm'),
-        default: 'size-full py-15 px-40 text-base',
+        default: 'size-full py-15 px-25 text-base',
         fullWidth: 'size-full px-16 pt-4 pb-72 text-base sm:px-24',
         none: '',
         select: 'px-3 py-2 text-base data-readonly:w-fit',
