@@ -12,6 +12,10 @@ interface DraftStore {
   values: DraftValues;
   setField: <K extends keyof DraftValues>(field: K, value: DraftValues[K]) => void;
   reset: () => void;
+  updateTitle: (newTitle: string) => void;
+  updatePath: (newPath: string) => void;
+  updateBlogId: (newBlogId: string) => void;
+  updateEntryBlockId: (newEntryBlockId: string) => void;
 }
 
 export const useDraftStore = create<DraftStore>((set) => ({
@@ -34,4 +38,24 @@ export const useDraftStore = create<DraftStore>((set) => ({
         entryBlockId: '',
       },
     }),
+  updateTitle: (newTitle: string) => {
+    set((state) => ({
+      values: { ...state.values, title: newTitle },
+    }));
+  },
+  updatePath: (newPath: string) => {
+    set((state) => ({
+      values: { ...state.values, path: newPath },
+    }));
+  },
+  updateBlogId: (newBlogId: string) => {
+    set((state) => ({
+      values: { ...state.values, blogId: newBlogId },
+    }));
+  },
+  updateEntryBlockId: (newEntryBlockId: string) => {
+    set((state) => ({
+      values: { ...state.values, entryBlockId: newEntryBlockId },
+    }));
+  },
 }));
