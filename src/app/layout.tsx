@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'Blolet',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko'>
-      <body className='antialiased'>{children}</body>
+      <body className='antialiased'>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
