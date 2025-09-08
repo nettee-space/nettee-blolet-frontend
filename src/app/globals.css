@@ -135,6 +135,7 @@
   }
 }
 body {
+  width: 100%;
   font-family: 'Pretendard', sans-serif;
   font-size: 18px;
   line-height: 32px;
