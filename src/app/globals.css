@@ -139,6 +139,7 @@ body {
   font-family: 'Pretendard', sans-serif;
   font-size: 18px;
   line-height: 32px;
+  font-weight: 400;
   letter-spacing: -3%;
 }
 .placeholder-multiline::before {

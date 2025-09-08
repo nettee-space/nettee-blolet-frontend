@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import './globals.css';
-import HomeHeader from './components/home-header';
+import Header from './components/header';
 
 export const metadata: Metadata = {
   title: 'Blolet',
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang='ko'>
       <body className='antialiased'>
-        <HomeHeader />
+        <Header />
         <main>{children}</main>
       </body>
     </html>
