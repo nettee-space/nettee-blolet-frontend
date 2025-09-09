@@ -1,5 +1,4 @@
-import ArticleCard from './article-card';
-import ContentsWrapper from './contents-wrapper';
+import ArticleCard from '@/app/components/contents/article-card';
 
 const article = [
   {
@@ -84,14 +83,16 @@ const article = [
   },
 ];
 
-export default function RecommendArticle() {
+export default function LikeList() {
   return (
-    <ContentsWrapper title='블로기님을 위한 추천 아티클'>
-      <article className='grid w-full grid-cols-4 gap-x-7 gap-y-[70px]'>
-        {article.map((article) => (
-          <ArticleCard key={article.id} article={article} />
+    <article className='mx-auto'>
+      <ul className='mx-auto grid w-fit grid-cols-4 gap-x-4 gap-y-[70px]'>
+        {article.map((art) => (
+          <li key={art.id}>
+            <ArticleCard article={art} />
+          </li>
         ))}
-      </article>
-    </ContentsWrapper>
+      </ul>
+    </article>
   );
 }

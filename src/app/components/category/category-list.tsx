@@ -16,6 +16,7 @@ interface CategoryListProps {
   list: List[];
   children?: ReactNode;
 }
+
 export default function CategoryList({ title, list, children }: CategoryListProps) {
   const pathname = usePathname();
   return (
@@ -23,13 +24,13 @@ export default function CategoryList({ title, list, children }: CategoryListProp
       <h2 className='pl-3 text-[13px] text-gray-400'>{title}</h2>
       <ul className='py-5 text-black'>
         {list.map((cat) => (
-          <li key={cat.id}>
-            <Link
-              href={cat.link}
-              className={clsx('block rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-100', {
-                'bg-gray-100 font-semibold': pathname === cat.link,
-              })}
-            >
+          <li
+            key={cat.id}
+            className={clsx('w-fit rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-100', {
+              'bg-gray-100 font-semibold': pathname === cat.link,
+            })}
+          >
+            <Link href={cat.link} className='block w-53'>
               {cat.category}
             </Link>
           </li>
