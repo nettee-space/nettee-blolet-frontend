@@ -28,9 +28,11 @@ export default function DraftContents({ open, sidebar }: EditWrapperProps) {
       <main className='h-dvh w-full overflow-y-auto pt-20'>
         <ContentsBanner bannerImg={bannerImg} />
         <article className='h-dvh w-full text-[#000]'>
-          <EditContent handleBannerUpload={handleBannerUpload} />
-          <hr className='mx-auto w-[calc(100%-200px)]' />
-          <PlateEditor />
+          <form>
+            <EditContent handleBannerUpload={handleBannerUpload} />
+            <hr className='mx-auto w-[calc(100%-200px)]' />
+            <PlateEditor />
+          </form>
         </article>
       </main>
     </div>
