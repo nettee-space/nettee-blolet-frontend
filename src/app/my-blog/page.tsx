@@ -1,4 +1,4 @@
-import MyBlogContents from '@/features/my-blog/my-blog-contents';
+import MyBlogContents from '@/features/my-blog/contents';
 
 export default function MyBlogPage() {
   return (

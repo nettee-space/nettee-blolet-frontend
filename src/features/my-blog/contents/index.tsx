@@ -1,4 +1,4 @@
-import ArticleCardWide from './article-card-wide';
+import ArticleCardWide from '@/shared/components/ui/article-card-wide';
 
 const article = [
   {

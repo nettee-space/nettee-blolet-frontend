@@ -30,9 +30,10 @@ export default function NavList({ navLinks }: NavListProps) {
         return (
           <li
             key={nav.id}
-            className={clsx('cursor-pointer rounded-full px-5 py-2 transition-colors', {
-              [activeClasses]: isActive,
-            })}
+            className={clsx(
+              'cursor-pointer rounded-full px-5 py-2 transition-colors',
+              isActive && activeClasses,
+            )}
           >
             <Link href={nav.link}>{nav.label}</Link>
           </li>

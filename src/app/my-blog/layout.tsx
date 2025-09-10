@@ -1,4 +1,4 @@
-import MyBlogSideBar from '@/features/my-blog/my-blog-side-bar';
+import MyBlogSideBar from '@/features/my-blog/side-bar';
 
 export default function RootLayout({
   children,

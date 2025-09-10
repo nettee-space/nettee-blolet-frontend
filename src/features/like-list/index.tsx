@@ -1,4 +1,4 @@
-import ArticleCard from '@/app/components/contents/article-card';
+import ArticleCard from '@/shared/components/ui/article-card';
 
 const article = [
   {
