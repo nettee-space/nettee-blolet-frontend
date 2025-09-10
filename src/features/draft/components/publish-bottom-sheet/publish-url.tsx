@@ -1,21 +1,28 @@
 'use client';
 import { useDraftStore } from '@/store/useDraftStore';
 
+interface InputChangeEvent {
+  target: {
+    value: string;
+    name: string;
+  };
+}
 export default function PublishUrl() {
-  const url = useDraftStore((state) => state.values.path);
-  const setUrl = useDraftStore((state) => state.setField);
-  const onChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl('path', e.target.value);
+  const { values, errors, setField } = useDraftStore();
+
+  const handleInputChange = (e: InputChangeEvent) => {
+    setField('path', e.target.value);
   };
   return (
-    <input
-      required
-      type='url'
-      className='bg-transparent text-inherit'
-      value={url}
-      onChange={onChangeUrl}
-      maxLength={2000}
-      pattern='^[\p{L}\p{N}\p{M}\p{S}](?:[\p{L}\p{N}\p{M}\p{S}_-]*[\p{L}\p{N}\p{M}\p{S}])?$'
-    />
+    <>
+      <input
+        type='text'
+        name='path'
+        value={values.path}
+        onChange={handleInputChange}
+        onBlur={handleInputChange}
+      />
+      {errors.path && <p style={{ color: 'red' }}>{errors.path}</p>}
+    </>
   );
 }
