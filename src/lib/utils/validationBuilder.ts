@@ -1,29 +1,39 @@
 import { z } from 'zod';
+import { ZodTypeAny } from 'zod/v3';
 
 interface ValidationRule {
-  type: 'string';
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  regexp?: {
-    pattern: string;
-    flags?: string;
-  };
-  messages?: {
-    required?: string;
-    minLength?: string;
-    maxLength?: string;
-    regexp?: string;
+  [key: string]: {
+    type: 'string';
+    required?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    regexp?: {
+      pattern: string;
+      flags?: string;
+    };
+    messages?: {
+      required?: string;
+      minLength?: string;
+      maxLength?: string;
+      regexp?: string;
+    };
   };
 }
 
-type Validations = Record<string, ValidationRule>;
+export function buildSchemaFromApi(rules: ValidationRule) {
+  const shape: { [key: string]: ZodTypeAny } = {};
 
-export function buildSchemaFromApi(validations: Validations) {
-  const shape: Record<string, z.ZodTypeAny> = {};
+  for (const field in rules) {
+    const rule = rules[field];
+    let schema: z.ZodString | z.ZodNumber;
 
-  for (const [field, rules] of Object.entries(validations)) {
-    let schema = z.string();
+    if (rule.type === 'string') {
+      schema = z.string();
+    } else if (rule.type === 'number') {
+      schema = z.number();
+    } else {
+      continue;
+    }
 
     // required
     if (rules.required) {

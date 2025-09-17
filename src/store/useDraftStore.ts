@@ -1,107 +1,75 @@
 // src/store/publishStore.ts
 
+import { ZodObject, ZodRawShape } from 'zod';
 import { create } from 'zustand';
 
-interface DraftValues {
+import { buildSchemaFromApi } from '@/lib/utils/validationBuilder';
+import { fetchValidationRules } from '@/sevices/validationService';
+
+interface FormData {
   blogId: string;
   path: string;
   title: string;
   entryBlockId: string;
 }
 
-interface ValidationRules {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+type FormErrors = {
+  [key in keyof FormData]?: string;
+};
+
+interface FormState {
+  formData: FormData;
+  errors: FormErrors;
+  isLoading: boolean;
+  validationSchema: ZodObject<ZodRawShape> | null;
+  setFormData: (field: keyof FormData, value: string) => void;
+  fetchAndSetSchema: () => Promise<void>;
+  validateAndSubmit: () => boolean;
 }
 
-interface DraftStore {
-  values: DraftValues;
-  errors: Partial<Record<keyof DraftValues, string>>;
-  validationRules: ValidationRules | null;
-  setValidationRules: (rules: ValidationRules) => void;
-  setField: <K extends keyof DraftValues>(field: K, value: DraftValues[K]) => void;
-  validateField: <K extends keyof DraftValues>(field: K, value: DraftValues[K]) => void;
-  validateAllFields: () => boolean;
-  reset: () => void;
-}
-
-export const useDraftStore = create<DraftStore>((set, get) => ({
-  values: {
+export const useDraftStore = create<FormState>((set, get) => ({
+  formData: {
     blogId: '',
     path: '',
     title: '',
     entryBlockId: '',
   },
   errors: {},
-  validationRules: null,
-
-  setValidationRules: (rules) => set({ validationRules: rules }),
-
-  setField: (field, value) => {
+  isLoading: false,
+  validationSchema: null,
+  setFormData: (field, value) => {
     set((state) => ({
-      values: { ...state.values, [field]: value },
-    }));
-    get().validateField(field, value);
-  },
-
-  validateField: (field, value) => {
-    const rules = get().validationRules?.[field];
-    if (!rules) return;
-
-    let error = '';
-
-    // 필수 항목 검사
-    if (rules.required && !value) {
-      error = rules.messages.required;
-    }
-    // 정규식 검사
-    else if (rules.regexp && !new RegExp(rules.regexp.pattern, rules.regexp.flags).test(value)) {
-      error = rules.messages.regexp;
-    }
-    // minLength, maxLength 검사
-    else if (rules.minLength && value.length < rules.minLength) {
-      error = rules.messages.minLength;
-    } else if (rules.maxLength && value.length > rules.maxLength) {
-      error = rules.messages.maxLength;
-    }
-    // min, max 숫자 검사
-    else if (rules.min !== undefined && value < rules.min) {
-      error = rules.messages.min;
-    } else if (rules.max !== undefined && value > rules.max) {
-      error = rules.messages.max;
-    }
-
-    set((state) => ({
-      errors: {
-        ...state.errors,
-        [field]: error,
-      },
+      formData: { ...state.formData, [field]: value },
+      errors: { ...state.errors, [field]: undefined },
     }));
   },
-
-  validateAllFields: () => {
-    const { values, validateField, validationRules } = get();
-    if (!validationRules) return false;
-
-    let hasErrors = false;
-    Object.keys(validationRules).forEach((field) => {
-      // API 응답에 존재하는 필드만 검사
-      validateField(field as keyof DraftValues, values[field as keyof DraftValues]);
-      if (get().errors[field as keyof DraftValues]) {
-        hasErrors = true;
-      }
-    });
-    return !hasErrors;
+  fetchAndSetSchema: async () => {
+    set({ isLoading: true });
+    try {
+      const rules = await fetchValidationRules();
+      const schema = buildSchemaFromApi(rules);
+      set({ validationSchema: schema, isLoading: false });
+    } catch (error) {
+      console.error('스키마 생성 실패', error);
+      set({ isLoading: false });
+    }
   },
+  validateAndSubmit: () => {
+    const { formData, validationSchema } = get();
+    if (!validationSchema) {
+      console.error('유효성 검사 스키마가 로드되지 않았습니다.');
+      return false;
+    }
+    const result = validationSchema.safeParse(formData);
 
-  reset: () =>
-    set({
-      values: {
-        blogId: '',
-        path: '',
-        title: '',
-        entryBlockId: '',
-      },
-      errors: {},
-    }),
+    if (!result.success) {
+      const formattedErrors = result.error.flatten().fieldErrors;
+      set({ errors: formattedErrors as FormErrors });
+      console.error('유효성 검사 실패', formattedErrors);
+      return false;
+    }
+    set({ errors: {} });
+    console.log('유효성 검사 성공! 제출할 데이터', result.data);
+    return true;
+  },
 }));
