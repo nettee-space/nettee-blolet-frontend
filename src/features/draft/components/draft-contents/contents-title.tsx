@@ -1,10 +1,16 @@
+'use client';
+import { useEffect } from 'react';
+
 import { useDraftStore } from '@/store/useDraftStore';
 
 export default function ContentsTitle() {
-  const title = useDraftStore((state) => state.values.title);
-  const updateTitle = useDraftStore((state) => state.updateTitle);
+  const { title, errors, setTitle, initializeValidation } = useDraftStore();
+  useEffect(() => {
+    initializeValidation();
+  }, [initializeValidation]);
+
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateTitle(e.target.value);
+    setTitle(e.target.value);
   };
   return (
     <section className='w-full text-[40px]'>
@@ -17,6 +23,7 @@ export default function ContentsTitle() {
         value={title}
         onChange={onChangeTitle}
       />
+      {errors.title && <p style={{ color: 'red' }}>{errors.title}</p>}
     </section>
   );
 }

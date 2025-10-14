@@ -1,28 +1,34 @@
 'use client';
+import { useEffect } from 'react';
+
 import { useDraftStore } from '@/store/useDraftStore';
 
-interface InputChangeEvent {
-  target: {
-    value: string;
-    name: string;
-  };
-}
 export default function PublishUrl() {
-  const { values, errors, setField } = useDraftStore();
+  const { path, errors, setPath, initializeValidation } = useDraftStore();
 
-  const handleInputChange = (e: InputChangeEvent) => {
-    setField('path', e.target.value);
+  useEffect(() => {
+    initializeValidation();
+  }, [initializeValidation]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPath(e.target.value);
   };
+
   return (
-    <>
+    <div className='relative flex w-full items-center justify-between overflow-hidden rounded-md'>
       <input
+        className='w-full px-2 outline-none focus:bg-[#F3F4F5]'
         type='text'
         name='path'
-        value={values.path}
+        value={path}
         onChange={handleInputChange}
         onBlur={handleInputChange}
       />
-      {errors.path && <p style={{ color: 'red' }}>{errors.path}</p>}
-    </>
+      {errors.path && (
+        <p className='pointer-events-none absolute right-2 text-nowrap text-[#E63737]'>
+          {errors.path}
+        </p>
+      )}
+    </div>
   );
 }

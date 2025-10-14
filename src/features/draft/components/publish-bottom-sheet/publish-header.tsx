@@ -1,3 +1,5 @@
+'use client';
+
 export default function PublishHeader() {
   return (
     <header className='flex items-center justify-between'>
