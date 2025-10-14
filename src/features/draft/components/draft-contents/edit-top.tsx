@@ -1,6 +1,10 @@
 'use client';
 import Image from 'next/image';
 
+import { Button } from '@/components/ui/button';
+
+import PublishTrigger from '../publish-bottom-sheet/publish-trigger';
+
 interface EditTopProps {
   open: () => void;
   sidebar?: boolean;
@@ -57,13 +61,14 @@ export default function EditTop({ open, sidebar }: EditTopProps) {
             <p className={currentStatus.color}>{currentStatus.text}</p>
           </div>
         )}
-        <div className='flex items-center gap-[18px]'>
-          <button className='rounded-[50px] border border-[#ccc] bg-[#ffffff] px-[18px] py-[10px] text-[#000]'>
+        <div className='flex items-center gap-[18px] text-[18px]/[32px] font-medium'>
+          <Button
+            variant='outline'
+            className='rounded-[50px] px-[18px] py-[10px] text-[18px]/[32px]'
+          >
             미리보기
-          </button>
-          <button className='rounded-[50px] bg-[#4d4d4d] px-[18px] py-[10px] text-[#ffffff]'>
-            게시하기
-          </button>
+          </Button>
+          <PublishTrigger />
         </div>
       </div>
     </div>
