@@ -1,14 +1,13 @@
 'use client';
+import clsx from 'clsx';
+
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
+import { useSidebar } from '@/components/ui/sidebar';
 
+import SideBarCustomTrigger from '../draft-side-bar.tsx/sidebar-custom-trigger';
 import PublishTrigger from '../publish-bottom-sheet/publish-trigger';
-
-interface EditTopProps {
-  open: () => void;
-  sidebar?: boolean;
-}
 
 const uploadStatus = [
   {
@@ -33,27 +32,18 @@ const uploadStatus = [
   },
 ];
 
-export default function EditTop({ open, sidebar }: EditTopProps) {
+export default function EditTop() {
   const sampleStatus = '게시 완료';
   const currentStatus = uploadStatus.find((status) => status.text === sampleStatus);
-
+  const { open } = useSidebar();
   return (
     <div
-      className={
-        sidebar
-          ? 'absolute top-0 z-50 flex h-20 w-full max-w-[1920px] items-center justify-end bg-white px-[37px]'
-          : 'absolute top-0 z-50 flex h-20 w-full max-w-[1920px] items-center justify-between bg-white px-[37px]'
-      }
+      className={clsx(
+        'absolute top-0 z-50 flex h-20 w-full max-w-[1920px] items-center bg-white px-[37px]',
+        open ? 'justify-end' : 'justify-between',
+      )}
     >
-      <button onClick={open} className={sidebar ? 'hidden' : 'flex items-center'}>
-        <Image
-          src={'/icons/SignIn.svg'}
-          alt='사이드 바 열기'
-          width={24}
-          height={24}
-          className='rotate-180'
-        />
-      </button>
+      {!open && <SideBarCustomTrigger />}
       <div className='flex items-center gap-[32px]'>
         {currentStatus && (
           <div className='flex items-center gap-3'>

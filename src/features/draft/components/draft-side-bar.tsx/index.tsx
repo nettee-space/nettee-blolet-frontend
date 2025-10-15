@@ -1,31 +1,31 @@
 'use client';
 
+import { Sidebar, SidebarContent } from '@/components/ui/sidebar';
+
 import SideBarAdmin from './sidebar-admin';
 import SideBarDraft from './sidebar-draft';
 import SideBarFunction from './sidebar-function';
+import SideBarHeader from './sidebar-header';
 import SideBarMenu from './sidebar-menu';
-import SideBarTop from './sidebar-top';
+import SidebarSearchInput from './sidebar-search-input';
 
-interface SideWrapperProps {
-  close: () => void;
-  sidebar?: boolean;
-}
-
-export default function DraftSideBar({ close, sidebar }: SideWrapperProps) {
-  const baseClass =
-    'flex h-full w-full flex-col justify-between bg-white z-60 px-[30px] py-[32px] text-[18px] leading-[30px] text-[#000] sm:w-[300px] transition-all duration-300 sm:relative fixed ';
-
-  const hiddenClass = 'left-[100%] hidden';
-
+export default function DraftSideBar() {
   return (
-    <div className={`${baseClass} ${sidebar ? '' : hiddenClass}`}>
-      <SideBarTop close={close} />
-      <div className='flex h-full w-full flex-col gap-6 divide-y divide-[#ccc]'>
+    <Sidebar className='absolute top-0 z-60 flex h-dvh w-full flex-col justify-between gap-12 border-none bg-[#F9F9F9] px-[30px] pb-[32px] text-[18px] leading-[30px] text-[#000] sm:w-[300px]'>
+      <SideBarHeader />
+      <SidebarContent className='flex w-full flex-1 flex-col gap-6 overflow-hidden border-b'>
         <SideBarMenu />
-        <SideBarDraft />
+        <hr />
+        <SidebarSearchInput />
+        <div className='flex flex-col gap-8'>
+          <SideBarDraft />
+          <SideBarDraft />
+        </div>
+        <hr />
         <SideBarFunction />
-        <SideBarAdmin />
-      </div>
-    </div>
+      </SidebarContent>
+
+      <SideBarAdmin />
+    </Sidebar>
   );
 }

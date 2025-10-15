@@ -11,7 +11,7 @@ export default function PublishForm() {
   const [selectedSeries, setSelectedSeries] = useState<string>('');
 
   return (
-    <form className='mx-auto flex max-w-[1920px] min-w-[640px] flex-col gap-10 px-25 py-10'>
+    <form className='mx-auto flex w-full max-w-[1920px] min-w-[640px] flex-col gap-10 px-25 py-10'>
       <PublishHeader />
       <div className='flex flex-col gap-6 text-[#000]'>
         <FieldWrapper className='gap-[62px]' label='시리즈'>
