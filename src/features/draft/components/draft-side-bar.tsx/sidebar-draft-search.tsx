@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export default function SidebarSearchInput() {
+export default function SideBarDraftSearch() {
   return (
     <div className='flex h-10 items-center gap-3 rounded-[8px] border border-[#ccc] px-4'>
       <Image

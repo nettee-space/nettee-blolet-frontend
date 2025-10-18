@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/components/ui/sidebar';
 
-import SideBarCustomTrigger from '../draft-side-bar.tsx/sidebar-custom-trigger';
+import SideBarToggleButton from '../draft-side-bar.tsx/sidebar-toggle-button';
 import PublishTrigger from '../publish-bottom-sheet/publish-trigger';
 
 const uploadStatus = [
@@ -43,7 +43,7 @@ export default function EditTop() {
         open ? 'justify-end' : 'justify-between',
       )}
     >
-      {!open && <SideBarCustomTrigger />}
+      {!open && <SideBarToggleButton />}
       <div className='flex items-center gap-[32px]'>
         {currentStatus && (
           <div className='flex items-center gap-3'>

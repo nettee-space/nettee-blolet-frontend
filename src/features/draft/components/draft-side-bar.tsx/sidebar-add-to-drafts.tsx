@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-export default function SideBarMenu() {
+export default function SideBarAddToDrafts() {
   return (
     <button className='flex h-10 items-center gap-3'>
       <Image width={24} height={24} src={'/icons/fileadd.svg'} alt='FileAdd' />

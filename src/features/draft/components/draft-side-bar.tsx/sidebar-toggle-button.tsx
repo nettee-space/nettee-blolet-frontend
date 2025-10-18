@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { useSidebar } from '@/components/ui/sidebar';
 
-export default function SideBarCustomTrigger() {
+export default function SideBarToggleButton() {
   const { toggleSidebar } = useSidebar();
 
   return (
