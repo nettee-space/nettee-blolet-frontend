@@ -1,18 +1,14 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { useState } from 'react';
 
-import ContentsBannerInput from './contents-banner-input';
 import ContentsTag from './contents-tag';
 import ContentsTitle from './contents-title';
 import FieldWrapper from '../field-wrapper';
+import ContentsBannerToggleButton from './media-upload-modal/contents-banner-toggle-button';
 import SeriesSelect from '../publish-bottom-sheet/series-select';
 
-interface EditContentProps {
-  handleBannerUpload: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-export default function EditContent({ handleBannerUpload }: EditContentProps) {
+export default function EditContent() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tags, setTags] = useState(['프론트엔드', 'React', 'Javascript']);
   return (
@@ -20,7 +16,7 @@ export default function EditContent({ handleBannerUpload }: EditContentProps) {
       <ContentsTitle />
       <div className='flex w-full flex-col items-start gap-6 leading-[30px] font-normal'>
         <FieldWrapper className='gap-[50px]' label='대표 이미지 설정'>
-          <ContentsBannerInput handleBannerUpload={handleBannerUpload} />
+          <ContentsBannerToggleButton />
         </FieldWrapper>
         <FieldWrapper className='gap-[50px]' label='시리즈'>
           <SeriesSelect />

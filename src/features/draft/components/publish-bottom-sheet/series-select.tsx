@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import { useState } from 'react';
 
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
@@ -57,13 +56,9 @@ export default function SeriesSelect({ onSeriesChange, selectedSeries }: SeriesS
       >
         <Command className='flex flex-col gap-6'>
           <header className='flex flex-col gap-6'>
-            <div className='flex w-full items-center justify-between text-[#4d4d4d]'>
-              <h2 id='series-title'>시리즈 설정</h2>
-              <button className='flex items-center gap-[10px] text-[#999]' aria-label='시리즈 추가'>
-                <Image src={'/icons/plus.svg'} alt='' width={20} height={20} />
-                <span>시리즈 추가</span>
-              </button>
-            </div>
+            <span id='series-title' className='text-[#4d4d4d]'>
+              시리즈 설정
+            </span>
           </header>
           <CommandList>
             <CommandGroup className='p-0'>

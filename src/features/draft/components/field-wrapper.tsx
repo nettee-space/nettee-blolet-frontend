@@ -9,8 +9,8 @@ interface FieldWrapperProps {
 export default function FieldWrapper({ label, children, className = '' }: FieldWrapperProps) {
   return (
     <section className={`flex items-center justify-start ${className}`}>
-      {label && <h2 className='w-30 text-[#999]'>{label}</h2>}
-      <div className='flex-1'>{children}</div>
+      {label && <span className='w-30 text-[#999]'>{label}</span>}
+      <span className='flex-1'>{children}</span>
     </section>
   );
 }
