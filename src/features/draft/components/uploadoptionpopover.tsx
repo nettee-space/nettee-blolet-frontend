@@ -1,21 +1,21 @@
 'use client';
 
 import Image from 'next/image';
-import React, { useState, useRef, useCallback, ChangeEvent } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import { PopoverContent } from '@/components/ui/popover';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
+import { BannerUploadInput } from './draft-contents';
+
 interface UploadOptionPopoverProps {
   type: 'image' | 'file';
-  onFileUpload?: (files: File[]) => void;
-  onLinkSubmit?: (link: string) => void;
+  handleBannerUpload: (input: BannerUploadInput) => void;
 }
 
 export default function UploadOptionPopover({
   type,
-  onFileUpload,
-  onLinkSubmit,
+  handleBannerUpload,
 }: UploadOptionPopoverProps) {
   const labels =
     type === 'image'
@@ -29,14 +29,7 @@ export default function UploadOptionPopover({
   const handleDragOver = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const hasFiles = Array.from(e.dataTransfer.items || []).some((item) => item.kind === 'file');
-    if (hasFiles) {
-      e.dataTransfer.dropEffect = 'copy';
-      setIsDragging(true);
-    } else {
-      e.dataTransfer.dropEffect = 'none';
-    }
+    setIsDragging(true);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
@@ -49,32 +42,23 @@ export default function UploadOptionPopover({
     (e: React.DragEvent<HTMLLabelElement>) => {
       e.preventDefault();
       e.stopPropagation();
+
       setIsDragging(false);
 
       const files = Array.from(e.dataTransfer.files || []);
-      if (files.length > 0 && onFileUpload) {
-        onFileUpload(files);
+      if (files.length > 0) {
+        handleBannerUpload({ type: 'file', files });
       }
     },
-    [onFileUpload],
-  );
-
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length > 0 && onFileUpload) {
-        onFileUpload(files);
-      }
-    },
-    [onFileUpload],
+    [handleBannerUpload],
   );
 
   const handleLinkSubmit = useCallback(() => {
-    if (linkValue.trim() && onLinkSubmit) {
-      onLinkSubmit(linkValue);
+    if (linkValue.trim()) {
+      handleBannerUpload({ type: 'url', url: linkValue });
       setLinkValue('');
     }
-  }, [linkValue, onLinkSubmit]);
+  }, [linkValue, handleBannerUpload]);
 
   return (
     <PopoverContent className='w-fit rounded-[20px] px-5 pt-3 pb-6'>
@@ -117,8 +101,12 @@ export default function UploadOptionPopover({
               className='hidden'
               id='file-input'
               type='file'
-              onChange={handleChange}
               accept={type === 'image' ? 'image/*' : undefined}
+              onChange={(e) => {
+                if (e.target.files) {
+                  handleBannerUpload({ type: 'file', files: Array.from(e.target.files) });
+                }
+              }}
             />
           </label>
         </TabsContent>
@@ -127,7 +115,7 @@ export default function UploadOptionPopover({
           className='flex flex-col items-end justify-center gap-4 text-xs font-normal'
         >
           <input
-            type='text'
+            type='url'
             value={linkValue}
             onChange={(e) => setLinkValue(e.target.value)}
             placeholder='링크를 추가해주세요.'

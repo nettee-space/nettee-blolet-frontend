@@ -16,7 +16,7 @@ export default function PublishTrigger() {
           게시하기
         </Button>
       </DrawerTrigger>
-      <DrawerContent className='z-100'>
+      <DrawerContent className='z-50'>
         <PublishForm />
       </DrawerContent>
     </Drawer>
