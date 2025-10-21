@@ -9,6 +9,7 @@ import { Editor, EditorContainer } from './ui/editor';
 export function PlateEditor() {
   const editor = usePlateEditor({
     plugins: EditorKit,
+    value: [{ type: 'p', children: [{ text: '' }] }],
   });
   return (
     <Plate editor={editor}>

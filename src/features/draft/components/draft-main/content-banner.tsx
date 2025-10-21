@@ -1,24 +1,24 @@
+'use client';
+
 import Image from 'next/image';
 
-interface MainBannerProps {
+interface ContentsBannerProps {
   bannerImg?: string;
   alt?: string;
-  className?: string;
   priority?: boolean;
 }
 
-export default function MainBanner({
+export default function ContentsBanner({
   bannerImg,
   alt = 'Main Banner',
-  className = '',
   priority = false,
-}: MainBannerProps) {
+}: ContentsBannerProps) {
   if (!bannerImg) {
     return null;
   }
 
   return (
-    <div className={`relative aspect-video w-full ${className}`}>
+    <div className='relative aspect-video h-66 w-full'>
       <Image
         src={bannerImg}
         alt={alt}

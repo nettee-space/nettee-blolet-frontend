@@ -1,5 +1,5 @@
-import Edit from './edit';
+import DraftMain from '@/features/draft/components/draft-main/draft-main';
 
 export default function EditPage() {
-  return <Edit />;
+  return <DraftMain />;
 }
